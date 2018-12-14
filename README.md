@@ -1,0 +1,27 @@
+## image_transport_plugins (crystal) - 2.0.0-0
+
+The packages in the `image_transport_plugins` repository were released into the `crystal` distro by running `/usr/bin/bloom-release --rosdistro crystal --track crystal image_transport_plugins` on `Fri, 14 Dec 2018 03:18:26 -0000`
+
+These packages were released:
+- `compressed_depth_image_transport`
+- `compressed_image_transport`
+- `image_transport_plugins`
+- `theora_image_transport`
+
+Version of package(s) in repository `image_transport_plugins`:
+
+- upstream repository: https://github.com/ros-perception/image_transport_plugins.git
+- release repository: unknown
+- rosdistro version: `null`
+- old version: `null`
+- new version: `2.0.0-0`
+
+Versions of tools used:
+
+- bloom version: `0.6.9`
+- catkin_pkg version: `0.4.9`
+- rosdep version: `0.13.0`
+- rosdistro version: `0.7.0`
+- vcstools version: `0.1.40`
+
+
