@@ -1,0 +1,13 @@
+Source: ros-crystal-image-transport-plugins
+Section: misc
+Priority: extra
+Maintainer: Michael Carroll <michael@openrobotics.org>
+Build-Depends: debhelper (>= 9.0.0), ros-crystal-ament-cmake, ros-crystal-ros-workspace
+Homepage: http://www.ros.org/wiki/image_transport_plugins
+Standards-Version: 3.9.2
+
+Package: ros-crystal-image-transport-plugins
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-crystal-compressed-depth-image-transport, ros-crystal-compressed-image-transport, ros-crystal-theora-image-transport, ros-crystal-ros-workspace
+Description: A set of plugins for publishing and subscribing to sensor_msgs/Image topics in representations other than raw pixel data.
+ For example, for viewing a stream of images off-robot, a video codec will give much lower bandwidth and latency. For low frame rate tranport of high-definition images, you might prefer sending them as JPEG or PNG-compressed form.
