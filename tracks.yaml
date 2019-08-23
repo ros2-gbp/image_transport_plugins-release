@@ -1,3 +1,4 @@
+release_repo_url: git@github.com:ros2-gbp/image_transport_plugins-release.git
 tracks:
   crystal:
     actions:
