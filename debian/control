@@ -1,0 +1,12 @@
+Source: ros-dashing-compressed-image-transport
+Section: misc
+Priority: extra
+Maintainer: David Gossow <dgossow@willowgarage.com>
+Build-Depends: debhelper (>= 9.0.0), ros-dashing-ament-cmake, ros-dashing-cv-bridge, ros-dashing-image-transport, ros-dashing-ros-workspace
+Homepage: http://www.ros.org/wiki/image_transport_plugins
+Standards-Version: 3.9.2
+
+Package: ros-dashing-compressed-image-transport
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-dashing-cv-bridge, ros-dashing-image-transport, ros-dashing-ros-workspace
+Description: Compressed_image_transport provides a plugin to image_transport for transparently sending images encoded as JPEG or PNG.
