@@ -1,0 +1,12 @@
+Source: ros-dashing-theora-image-transport
+Section: misc
+Priority: extra
+Maintainer: Julius Kammerl <jkammerl@willowgarage.com>
+Build-Depends: debhelper (>= 9.0.0), libogg-dev, libtheora-dev, ros-dashing-ament-cmake, ros-dashing-ament-lint-common, ros-dashing-builtin-interfaces, ros-dashing-cv-bridge, ros-dashing-image-transport, ros-dashing-pluginlib, ros-dashing-rclcpp, ros-dashing-rosidl-default-generators, ros-dashing-std-msgs, ros-dashing-ros-workspace, ros-dashing-rmw-connext-cpp, ros-dashing-rmw-fastrtps-cpp, ros-dashing-rmw-implementation, ros-dashing-rmw-opensplice-cpp, ros-dashing-rosidl-typesupport-connext-c, ros-dashing-rosidl-typesupport-connext-cpp, ros-dashing-rosidl-typesupport-opensplice-c, ros-dashing-rosidl-typesupport-opensplice-cpp
+Homepage: http://www.ros.org/wiki/image_transport_plugins
+Standards-Version: 3.9.2
+
+Package: ros-dashing-theora-image-transport
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libogg-dev, libtheora-dev, ros-dashing-builtin-interfaces, ros-dashing-cv-bridge, ros-dashing-image-transport, ros-dashing-pluginlib, ros-dashing-rclcpp, ros-dashing-rosidl-default-runtime, ros-dashing-std-msgs, ros-dashing-ros-workspace
+Description: Theora_image_transport provides a plugin to image_transport for transparently sending an image stream encoded with the Theora codec.
