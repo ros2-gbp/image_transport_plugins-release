@@ -1,0 +1,12 @@
+Source: ros-eloquent-theora-image-transport
+Section: misc
+Priority: optional
+Maintainer: Julius Kammerl <jkammerl@willowgarage.com>
+Build-Depends: debhelper (>= 9.0.0), libogg-dev, libtheora-dev, ros-eloquent-ament-cmake, ros-eloquent-ament-lint-common, ros-eloquent-builtin-interfaces, ros-eloquent-cv-bridge, ros-eloquent-image-transport, ros-eloquent-pluginlib, ros-eloquent-rclcpp, ros-eloquent-rosidl-default-generators, ros-eloquent-std-msgs, ros-eloquent-ros-workspace, ros-eloquent-rmw-connext-cpp, ros-eloquent-rmw-fastrtps-cpp, ros-eloquent-rmw-implementation, ros-eloquent-rmw-opensplice-cpp, ros-eloquent-rosidl-typesupport-connext-c, ros-eloquent-rosidl-typesupport-connext-cpp, ros-eloquent-rosidl-typesupport-opensplice-c, ros-eloquent-rosidl-typesupport-opensplice-cpp
+Homepage: http://www.ros.org/wiki/image_transport_plugins
+Standards-Version: 3.9.2
+
+Package: ros-eloquent-theora-image-transport
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libogg-dev, libtheora-dev, ros-eloquent-builtin-interfaces, ros-eloquent-cv-bridge, ros-eloquent-image-transport, ros-eloquent-pluginlib, ros-eloquent-rclcpp, ros-eloquent-rosidl-default-runtime, ros-eloquent-std-msgs, ros-eloquent-ros-workspace
+Description: Theora_image_transport provides a plugin to image_transport for transparently sending an image stream encoded with the Theora codec.
