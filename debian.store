@@ -1,1 +1,1 @@
-{"base": "ee5c2ad", "parent": "debian/eloquent/image_transport_plugins", "previous": "4e4d6b2", "trim": "", "trimbase": ""}
+{"trim": "", "base": "4e454a8", "trimbase": "", "parent": "debian/eloquent/image_transport_plugins", "previous": "39407f0"}
