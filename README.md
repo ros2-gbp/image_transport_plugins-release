@@ -1,3 +1,30 @@
+## image_transport_plugins (foxy) - 2.3.0-1
+
+The packages in the `image_transport_plugins` repository were released into the `foxy` distro by running `/usr/bin/bloom-release -r foxy image_transport_plugins` on `Thu, 28 May 2020 16:16:30 -0000`
+
+These packages were released:
+- `compressed_depth_image_transport`
+- `compressed_image_transport`
+- `image_transport_plugins`
+- `theora_image_transport`
+
+Version of package(s) in repository `image_transport_plugins`:
+
+- upstream repository: https://github.com/ros-perception/image_transport_plugins.git
+- release repository: unknown
+- rosdistro version: `null`
+- old version: `null`
+- new version: `2.3.0-1`
+
+Versions of tools used:
+
+- bloom version: `0.9.7`
+- catkin_pkg version: `0.4.20`
+- rosdep version: `0.19.0`
+- rosdistro version: `0.8.2`
+- vcstools version: `0.1.42`
+
+
 ## image_transport_plugins (eloquent) - 2.2.1-1
 
 The packages in the `image_transport_plugins` repository were released into the `eloquent` distro by running `/usr/bin/bloom-release --rosdistro eloquent image_transport_plugins` on `Thu, 24 Oct 2019 00:59:35 -0000`
