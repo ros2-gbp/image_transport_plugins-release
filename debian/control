@@ -1,0 +1,12 @@
+Source: ros-rolling-theora-image-transport
+Section: misc
+Priority: optional
+Maintainer: Julius Kammerl <jkammerl@willowgarage.com>
+Build-Depends: debhelper (>= 9.0.0), libogg-dev, libtheora-dev, ros-rolling-ament-cmake, ros-rolling-ament-lint-common, ros-rolling-builtin-interfaces, ros-rolling-cv-bridge, ros-rolling-image-transport, ros-rolling-pluginlib, ros-rolling-rclcpp, ros-rolling-rosidl-default-generators, ros-rolling-std-msgs, ros-rolling-ros-workspace, ros-rolling-rosidl-typesupport-connext-c, ros-rolling-rosidl-typesupport-connext-cpp, ros-rolling-rosidl-typesupport-fastrtps-c, ros-rolling-rosidl-typesupport-fastrtps-cpp
+Homepage: http://www.ros.org/wiki/image_transport_plugins
+Standards-Version: 3.9.2
+
+Package: ros-rolling-theora-image-transport
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libogg-dev, libtheora-dev, ros-rolling-builtin-interfaces, ros-rolling-cv-bridge, ros-rolling-image-transport, ros-rolling-pluginlib, ros-rolling-rclcpp, ros-rolling-rosidl-default-runtime, ros-rolling-std-msgs, ros-rolling-ros-workspace
+Description: Theora_image_transport provides a plugin to image_transport for transparently sending an image stream encoded with the Theora codec.
