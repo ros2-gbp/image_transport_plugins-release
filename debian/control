@@ -1,0 +1,12 @@
+Source: ros-galactic-theora-image-transport
+Section: misc
+Priority: optional
+Maintainer: Julius Kammerl <jkammerl@willowgarage.com>
+Build-Depends: debhelper (>= 9.0.0), libogg-dev, libtheora-dev, ros-galactic-ament-cmake, ros-galactic-ament-lint-common, ros-galactic-builtin-interfaces, ros-galactic-cv-bridge, ros-galactic-image-transport, ros-galactic-pluginlib, ros-galactic-rclcpp, ros-galactic-rosidl-default-generators, ros-galactic-std-msgs, ros-galactic-ros-workspace, ros-galactic-rosidl-typesupport-fastrtps-c, ros-galactic-rosidl-typesupport-fastrtps-cpp
+Homepage: http://www.ros.org/wiki/image_transport_plugins
+Standards-Version: 3.9.2
+
+Package: ros-galactic-theora-image-transport
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libogg-dev, libtheora-dev, ros-galactic-builtin-interfaces, ros-galactic-cv-bridge, ros-galactic-image-transport, ros-galactic-pluginlib, ros-galactic-rclcpp, ros-galactic-rosidl-default-runtime, ros-galactic-std-msgs, ros-galactic-ros-workspace
+Description: Theora_image_transport provides a plugin to image_transport for transparently sending an image stream encoded with the Theora codec.
