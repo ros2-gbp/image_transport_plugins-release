@@ -1,7 +1,7 @@
 /*********************************************************************
 * Software License Agreement (BSD License)
 * 
-*  Copyright (c) 20012, Willow Garage, Inc.
+*  Copyright (c) 2012, Willow Garage, Inc.
 *  All rights reserved.
 * 
 *  Redistribution and use in source and binary forms, with or without
@@ -41,7 +41,10 @@ namespace compressed_image_transport
 // Compression formats
 enum compressionFormat
 {
-  UNDEFINED = -1, JPEG, PNG
+  UNDEFINED = -1,
+  JPEG = 0,
+  PNG = 1,
+  TIFF = 2,
 };
 
 } //namespace compressed_image_transport
