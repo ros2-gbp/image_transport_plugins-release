@@ -1,0 +1,12 @@
+Source: ros-galactic-compressed-image-transport
+Section: misc
+Priority: optional
+Maintainer: David Gossow <dgossow@willowgarage.com>
+Build-Depends: debhelper (>= 9.0.0), ros-galactic-ament-cmake, ros-galactic-cv-bridge, ros-galactic-image-transport, ros-galactic-ros-workspace
+Homepage: http://www.ros.org/wiki/image_transport_plugins
+Standards-Version: 3.9.2
+
+Package: ros-galactic-compressed-image-transport
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-galactic-cv-bridge, ros-galactic-image-transport, ros-galactic-ros-workspace
+Description: Compressed_image_transport provides a plugin to image_transport for transparently sending images encoded as JPEG or PNG.
