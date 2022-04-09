@@ -2,10 +2,12 @@
 Changelog for package compressed_image_transport
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-2.3.3 (2022-04-08)
+2.3.2 (2022-02-18)
 ------------------
-* Avoid parameter exception for compressed image transport (`#86 <https://github.com/ros-perception/image_transport_plugins/issues/86>`_)
-* Contributors: Daisuke Nishimatsu
+* Add tiff compression support. (`#75 <https://github.com/ros-perception/image_transport_plugins/issues/75>`_)
+* Fix copyright year 20012 -> 2012 (`#79 <https://github.com/ros-perception/image_transport_plugins/issues/79>`_)
+* JPEG only supports 8 bits images (`#73 <https://github.com/ros-perception/image_transport_plugins/issues/73>`_)
+* Contributors: Ivan Santiago Paunovic, Michael Carroll
 
 2.3.1 (2021-07-13)
 ------------------

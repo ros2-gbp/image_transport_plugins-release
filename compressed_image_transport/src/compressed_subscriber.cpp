@@ -1,7 +1,7 @@
 /*********************************************************************
 * Software License Agreement (BSD License)
 *
-*  Copyright (c) 20012, Willow Garage, Inc.
+*  Copyright (c) 2012, Willow Garage, Inc.
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -63,9 +63,19 @@ void CompressedSubscriber::subscribeImpl(
     const Callback& callback,
     rmw_qos_profile_t custom_qos)
 {
+  this->subscribeImpl(node, base_topic, callback, custom_qos, rclcpp::SubscriptionOptions{});
+}
+
+void CompressedSubscriber::subscribeImpl(
+    rclcpp::Node * node,
+    const std::string& base_topic,
+    const Callback& callback,
+    rmw_qos_profile_t custom_qos,
+    rclcpp::SubscriptionOptions options)
+{
     logger_ = node->get_logger();
     typedef image_transport::SimpleSubscriberPlugin<CompressedImage> Base;
-    Base::subscribeImpl(node, base_topic, callback, custom_qos);
+    Base::subscribeImplWithOptions(node, base_topic, callback, custom_qos, options);
     uint ns_len = node->get_effective_namespace().length();
     std::string param_base_name = base_topic.substr(ns_len);
     std::replace(param_base_name.begin(), param_base_name.end(), '/', '.');
@@ -162,6 +172,9 @@ void CompressedSubscriber::internalCallback(const CompressedImage::ConstSharedPt
           if ((image_encoding == enc::RGBA8) || (image_encoding == enc::RGBA16))
             cv::cvtColor(cv_ptr->image, cv_ptr->image, CV_RGB2RGBA);
         }
+      }
+      if (message->format.find("jpeg") != std::string::npos && enc::bitDepth(image_encoding) == 16) {
+        cv_ptr->image.convertTo(cv_ptr->image, CV_16U, 256);
       }
     }
   }
