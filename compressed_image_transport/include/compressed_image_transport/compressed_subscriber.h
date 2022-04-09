@@ -1,7 +1,7 @@
 /*********************************************************************
 * Software License Agreement (BSD License)
 *
-*  Copyright (c) 2012, Willow Garage, Inc.
+*  Copyright (c) 20012, Willow Garage, Inc.
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,6 @@
 #include <string>
 
 #include <rclcpp/node.hpp>
-#include <rclcpp/subscription_options.hpp>
 
 #include <sensor_msgs/msg/image.hpp>
 #include <sensor_msgs/msg/compressed_image.hpp>
@@ -43,7 +42,7 @@
 
 namespace compressed_image_transport {
 
-class CompressedSubscriber final : public image_transport::SimpleSubscriberPlugin<sensor_msgs::msg::CompressedImage>
+class CompressedSubscriber : public image_transport::SimpleSubscriberPlugin<sensor_msgs::msg::CompressedImage>
 {
 public:
   CompressedSubscriber(): logger_(rclcpp::get_logger("CompressedSubscriber")) {}
@@ -61,13 +60,6 @@ protected:
       const std::string& base_topic,
       const Callback& callback,
       rmw_qos_profile_t custom_qos) override;
-
-  void subscribeImpl(
-      rclcpp::Node * ,
-      const std::string& base_topic,
-      const Callback& callback,
-      rmw_qos_profile_t custom_qos,
-      rclcpp::SubscriptionOptions options) override;
 
   void internalCallback(const sensor_msgs::msg::CompressedImage::ConstSharedPtr& message,
                         const Callback& user_cb) override;
