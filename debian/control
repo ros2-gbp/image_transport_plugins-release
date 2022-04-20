@@ -1,0 +1,12 @@
+Source: ros-humble-theora-image-transport
+Section: misc
+Priority: optional
+Maintainer: Julius Kammerl <jkammerl@willowgarage.com>
+Build-Depends: debhelper (>= 9.0.0), libogg-dev, libopencv-imgproc-dev, libtheora-dev, pkg-config, ros-humble-ament-cmake, ros-humble-ament-lint-common <!nocheck>, ros-humble-cv-bridge, ros-humble-image-transport, ros-humble-pluginlib, ros-humble-rclcpp, ros-humble-rcutils, ros-humble-rosidl-default-generators, ros-humble-sensor-msgs, ros-humble-std-msgs, ros-humble-ros-workspace, ros-humble-rosidl-typesupport-fastrtps-c, ros-humble-rosidl-typesupport-fastrtps-cpp
+Homepage: http://www.ros.org/wiki/image_transport_plugins
+Standards-Version: 3.9.2
+
+Package: ros-humble-theora-image-transport
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libogg-dev, libopencv-imgproc-dev, libtheora-dev, ros-humble-cv-bridge, ros-humble-image-transport, ros-humble-pluginlib, ros-humble-rclcpp, ros-humble-rcutils, ros-humble-rosidl-default-runtime, ros-humble-sensor-msgs, ros-humble-std-msgs, ros-humble-ros-workspace
+Description: Theora_image_transport provides a plugin to image_transport for transparently sending an image stream encoded with the Theora codec.
