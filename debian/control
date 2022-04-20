@@ -1,0 +1,13 @@
+Source: ros-humble-image-transport-plugins
+Section: misc
+Priority: optional
+Maintainer: Michael Carroll <michael@openrobotics.org>
+Build-Depends: debhelper (>= 9.0.0), ros-humble-ament-cmake, ros-humble-ros-workspace
+Homepage: http://www.ros.org/wiki/image_transport_plugins
+Standards-Version: 3.9.2
+
+Package: ros-humble-image-transport-plugins
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-humble-compressed-depth-image-transport, ros-humble-compressed-image-transport, ros-humble-theora-image-transport, ros-humble-ros-workspace
+Description: A set of plugins for publishing and subscribing to sensor_msgs/Image topics in representations other than raw pixel data.
+ For example, for viewing a stream of images off-robot, a video codec will give much lower bandwidth and latency. For low frame rate tranport of high-definition images, you might prefer sending them as JPEG or PNG-compressed form.
