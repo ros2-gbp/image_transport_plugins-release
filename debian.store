@@ -1,1 +1,1 @@
-{"base": "ee806fb", "parent": "debian/rolling/compressed_depth_image_transport", "previous": "22d8b8e", "trim": "", "trimbase": ""}
+{"base": "f10ad39", "parent": "debian/humble/compressed_depth_image_transport", "previous": "dff6ab1", "trim": "", "trimbase": ""}
