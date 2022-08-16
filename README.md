@@ -1,3 +1,30 @@
+## image_transport_plugins (rolling) - 2.6.0-1
+
+The packages in the `image_transport_plugins` repository were released into the `rolling` distro by running `/usr/bin/bloom-release -r rolling -t rolling image_transport_plugins` on `Tue, 16 Aug 2022 13:48:56 -0000`
+
+These packages were released:
+- `compressed_depth_image_transport`
+- `compressed_image_transport`
+- `image_transport_plugins`
+- `theora_image_transport`
+
+Version of package(s) in repository `image_transport_plugins`:
+
+- upstream repository: https://github.com/ros-perception/image_transport_plugins.git
+- release repository: https://github.com/ros2-gbp/image_transport_plugins-release.git
+- rosdistro version: `2.5.0-1`
+- old version: `2.5.0-1`
+- new version: `2.6.0-1`
+
+Versions of tools used:
+
+- bloom version: `0.11.2`
+- catkin_pkg version: `0.5.2`
+- rosdep version: `0.22.1`
+- rosdistro version: `0.9.0`
+- vcstools version: `0.1.42`
+
+
 ## image_transport_plugins (rolling) - 2.5.0-1
 
 The packages in the `image_transport_plugins` repository were released into the `rolling` distro by running `/usr/bin/bloom-release --track rolling --rosdistro rolling image_transport_plugins` on `Mon, 18 Apr 2022 15:47:00 -0000`
