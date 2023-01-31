@@ -1,0 +1,13 @@
+Source: ros-noetic-image-transport-plugins
+Section: misc
+Priority: optional
+Maintainer: Kenji Brameld <kenjibrameld@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), ros-noetic-catkin
+Homepage: http://www.ros.org/wiki/image_transport_plugins
+Standards-Version: 3.9.2
+
+Package: ros-noetic-image-transport-plugins
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-noetic-compressed-depth-image-transport, ros-noetic-compressed-image-transport, ros-noetic-theora-image-transport
+Description: A set of plugins for publishing and subscribing to sensor_msgs/Image topics in representations other than raw pixel data.
+ For example, for viewing a stream of images off-robot, a video codec will give much lower bandwidth and latency. For low frame rate tranport of high-definition images, you might prefer sending them as JPEG or PNG-compressed form.
