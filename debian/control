@@ -1,0 +1,12 @@
+Source: ros-melodic-theora-image-transport
+Section: misc
+Priority: optional
+Maintainer: Kenji Brameld <kenjibrameld@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), libogg-dev, libtheora-dev, ros-melodic-catkin, ros-melodic-cv-bridge, ros-melodic-dynamic-reconfigure, ros-melodic-image-transport, ros-melodic-message-generation, ros-melodic-pluginlib, ros-melodic-rosbag, ros-melodic-std-msgs
+Homepage: http://www.ros.org/wiki/image_transport_plugins
+Standards-Version: 3.9.2
+
+Package: ros-melodic-theora-image-transport
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libogg-dev, libtheora-dev, ros-melodic-cv-bridge, ros-melodic-dynamic-reconfigure, ros-melodic-image-transport, ros-melodic-message-runtime, ros-melodic-pluginlib, ros-melodic-rosbag, ros-melodic-std-msgs
+Description: Theora_image_transport provides a plugin to image_transport for transparently sending an image stream encoded with the Theora codec.
