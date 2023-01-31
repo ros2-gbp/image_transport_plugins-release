@@ -1,3 +1,30 @@
+## image_transport_plugins (melodic) - 1.9.6-1
+
+The packages in the `image_transport_plugins` repository were released into the `melodic` distro by running `/usr/bin/bloom-release --rosdistro melodic image_transport_plugins --override-release-repository-url https://github.com/ros2-gbp/image_transport_plugins-release.git` on `Tue, 31 Jan 2023 03:05:07 -0000`
+
+These packages were released:
+- `compressed_depth_image_transport`
+- `compressed_image_transport`
+- `image_transport_plugins`
+- `theora_image_transport`
+
+Version of package(s) in repository `image_transport_plugins`:
+
+- upstream repository: https://github.com/ros-perception/image_transport_plugins.git
+- release repository: https://github.com/ros-gbp/image_transport_plugins-release.git
+- rosdistro version: `1.9.5-0`
+- old version: `null`
+- new version: `1.9.6-1`
+
+Versions of tools used:
+
+- bloom version: `0.10.7`
+- catkin_pkg version: `0.4.24`
+- rosdep version: `0.21.0`
+- rosdistro version: `0.8.3`
+- vcstools version: `0.1.42`
+
+
 ## image_transport_plugins (noetic) - 1.15.0-1
 
 The packages in the `image_transport_plugins` repository were released into the `noetic` distro by running `/usr/bin/bloom-release --rosdistro noetic image_transport_plugins --override-release-repository-url https://github.com/ros2-gbp/image_transport_plugins-release.git` on `Tue, 31 Jan 2023 02:51:12 -0000`
