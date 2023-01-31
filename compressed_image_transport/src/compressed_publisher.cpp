@@ -1,7 +1,7 @@
 /*********************************************************************
 * Software License Agreement (BSD License)
 * 
-*  Copyright (c) 2012, Willow Garage, Inc.
+*  Copyright (c) 20012, Willow Garage, Inc.
 *  All rights reserved.
 * 
 *  Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,6 @@
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>
 #include <opencv2/highgui/highgui.hpp>
-#include <opencv2/imgcodecs.hpp>
 #include <boost/make_shared.hpp>
 
 #include "compressed_image_transport/compression_common.h"
@@ -67,7 +66,7 @@ void CompressedPublisher::advertiseImpl(ros::NodeHandle &nh, const std::string &
 
   // Set up reconfigure server for this topic
   reconfigure_server_ = boost::make_shared<ReconfigureServer>(this->nh());
-  ReconfigureServer::CallbackType f = boost::bind(&CompressedPublisher::configCb, this, boost::placeholders::_1, boost::placeholders::_2);
+  ReconfigureServer::CallbackType f = boost::bind(&CompressedPublisher::configCb, this, _1, _2);
   reconfigure_server_->setCallback(f);
 }
 
@@ -85,6 +84,7 @@ void CompressedPublisher::publish(const sensor_msgs::Image& message, const Publi
 
   // Compression settings
   std::vector<int> params;
+  params.resize(3, 0);
 
   // Get codec configuration
   compressionFormat encodingFormat = UNDEFINED;
@@ -102,15 +102,8 @@ void CompressedPublisher::publish(const sensor_msgs::Image& message, const Publi
     // JPEG Compression
     case JPEG:
     {
-      params.reserve(8);
-      params.emplace_back(IMWRITE_JPEG_QUALITY);
-      params.emplace_back(config_.jpeg_quality);
-      params.emplace_back(IMWRITE_JPEG_PROGRESSIVE);
-      params.emplace_back(config_.jpeg_progressive ? 1 : 0);
-      params.emplace_back(IMWRITE_JPEG_OPTIMIZE);
-      params.emplace_back(config_.jpeg_optimize ? 1 : 0);
-      params.emplace_back(IMWRITE_JPEG_RST_INTERVAL);
-      params.emplace_back(config_.jpeg_restart_interval);
+      params[0] = CV_IMWRITE_JPEG_QUALITY;
+      params[1] = config_.jpeg_quality;
 
       // Update ros message format header
       compressed.format += "; jpeg compressed ";
@@ -166,9 +159,8 @@ void CompressedPublisher::publish(const sensor_msgs::Image& message, const Publi
       // PNG Compression
     case PNG:
     {
-      params.reserve(2);
-      params.emplace_back(IMWRITE_PNG_COMPRESSION);
-      params.emplace_back(config_.png_level);
+      params[0] = CV_IMWRITE_PNG_COMPRESSION;
+      params[1] = config_.png_level;
 
       // Update ros message format header
       compressed.format += "; png compressed ";

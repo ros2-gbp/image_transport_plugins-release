@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 2.8.3)
 project(compressed_image_transport)
 
 find_package(OpenCV REQUIRED)
@@ -38,9 +38,3 @@ install(DIRECTORY include/${PROJECT_NAME}/
 install(FILES compressed_plugins.xml
         DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
-
-if(CATKIN_ENABLE_TESTING)
-  find_package(rostest REQUIRED)
-  add_rostest_gtest(basic_test test/basic.test test/basic.cpp)
-  target_link_libraries(basic_test ${catkin_LIBRARIES})
-endif()

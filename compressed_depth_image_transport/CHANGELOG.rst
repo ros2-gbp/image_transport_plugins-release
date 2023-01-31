@@ -2,24 +2,14 @@
 Changelog for package compressed_depth_image_transport
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.15.0 (2023-01-30)
--------------------
-* Update maintainer in ros1 branches (`#132 <https://github.com/ros-perception/image_transport_plugins/issues/132>`_)
-* Fix number of elements in vector parameter to call cv::imencode for OpenCV 4.7 (`#130 <https://github.com/ros-perception/image_transport_plugins/issues/130>`_)
-* Fix uninitialized memory usage (`#125 <https://github.com/ros-perception/image_transport_plugins/issues/125>`_)
-* Make the default compressed depth png_level 1 instead of 9 to save cpu (`#85 <https://github.com/ros-perception/image_transport_plugins/issues/85>`_)
-  The default 9 is so cpu intensive to be frequently unusable and results in many dropped frames, and there is still plenty of bandwidth savings from the compression at level 1.
-* Fix copyright year 20012 -> 2012 (`#80 <https://github.com/ros-perception/image_transport_plugins/issues/80>`_)
-* Fix regression in compressed_depth_image_transport with old bags (`#64 <https://github.com/ros-perception/image_transport_plugins/issues/64>`_)
-* Contributors: Johannes Meyer, Kenji Brameld, Lucas Walter, Martin Pecka, Michael Carroll, Timm Linder, ijnek, v4hn
-
-1.14.0 (2020-05-14)
--------------------
-* Bump CMake version to avoid CMP0048 warning (`#53 <https://github.com/ros-perception/image_transport_plugins/issues/53>`_)
-* Add depth compression by RVL `#42 <https://github.com/ros-perception/image_transport_plugins/issues/42>`_
-* Fix binary install locations for Windows build `#34 <https://github.com/ros-perception/image_transport_plugins/issues/34>`_
-* Add legacy constants when using opencv4 `#32 <https://github.com/ros-perception/image_transport_plugins/issues/32>`_
-* Contributors: Alejandro Hernández Cordero, David Gossow, Hans Gaiser, Sean Yen, Shuntaro Yamazaki
+1.9.6 (2023-01-30)
+------------------
+* Update maintainer in ros1 branches (`#133 <https://github.com/ros-perception/image_transport_plugins/issues/133>`_)
+* Make the default compressed depth png_level 1 instead of 9 to save cpu (`#131 <https://github.com/ros-perception/image_transport_plugins/issues/131>`_)
+* Fix uninitialized memory usage in compressedDepth transport (`#126 <https://github.com/ros-perception/image_transport_plugins/issues/126>`_)
+* Fix binary install locations for Windows build. (`#34 <https://github.com/ros-perception/image_transport_plugins/issues/34>`_)
+* Add legacy constants when using opencv4. (`#32 <https://github.com/ros-perception/image_transport_plugins/issues/32>`_)
+* Contributors: David Gossow, Hans Gaiser, Kenji Brameld, Lucas Walter, Martin Pecka, Sean Yen, Shuntaro Yamazaki, ijnek
 
 1.9.5 (2016-10-03)
 ------------------
@@ -29,7 +19,7 @@ Changelog for package compressed_depth_image_transport
 1.9.4 (2016-10-02)
 ------------------
 * address gcc6 build error and tune
-  With gcc6, compiling fails with 'stdlib.h: No such file or directory',
+  With gcc6, compiling fails with `stdlib.h: No such file or directory`,
   as including '-isystem /usr/include' breaks with gcc6, cf.,
   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=70129.
   This commit addresses this issue for this package in the same way

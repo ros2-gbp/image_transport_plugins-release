@@ -2,15 +2,10 @@
 Changelog for package image_transport_plugins
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.15.0 (2023-01-30)
--------------------
-* Update maintainer in ros1 branches (`#132 <https://github.com/ros-perception/image_transport_plugins/issues/132>`_)
+1.9.6 (2023-01-30)
+------------------
+* Update maintainer in ros1 branches (`#133 <https://github.com/ros-perception/image_transport_plugins/issues/133>`_)
 * Contributors: Kenji Brameld, ijnek
-
-1.14.0 (2020-05-14)
--------------------
-* Bump CMake version to avoid CMP0048 warning (`#53 <https://github.com/ros-perception/image_transport_plugins/issues/53>`_)
-* Contributors: Alejandro Hernández Cordero
 
 1.9.5 (2016-10-03)
 ------------------
