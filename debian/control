@@ -1,0 +1,12 @@
+Source: ros-noetic-compressed-image-transport
+Section: misc
+Priority: optional
+Maintainer: Kenji Brameld <kenjibrameld@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), catkin, image-transport-tools, libcv-bridge-dev, libdynamic-reconfigure-config-init-mutex-dev, libgmock-dev, libgtest-dev, libimage-transport-dev, librostest-dev, libturbojpeg0-dev, python3-cv-bridge, python3-dynamic-reconfigure, python3-rostest
+Homepage: http://www.ros.org/wiki/image_transport_plugins
+Standards-Version: 3.9.2
+
+Package: ros-noetic-compressed-image-transport
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, image-transport-tools, libcv-bridge-dev, libdynamic-reconfigure-config-init-mutex-dev, libimage-transport-dev, libturbojpeg0-dev, python3-cv-bridge, python3-dynamic-reconfigure
+Description: Compressed_image_transport provides a plugin to image_transport for transparently sending images encoded as JPEG or PNG.

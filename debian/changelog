@@ -1,0 +1,226 @@
+ros-noetic-compressed-image-transport (1.15.0-1buster) buster; urgency=high
+
+  * Update maintainer in ros1 branches (#132 <https://github.com/ros-perception/image_transport_plugins/issues/132>)
+  * Fix number of elements in vector parameter to call cv::imencode for OpenCV 4.7 (#130 <https://github.com/ros-perception/image_transport_plugins/issues/130>)
+  * Performance optimizations for JPEG decompression (#60 <https://github.com/ros-perception/image_transport_plugins/issues/60>)
+  * Fix copyright year 20012 -> 2012 (#80 <https://github.com/ros-perception/image_transport_plugins/issues/80>)
+  * Add a basic loopback unit test (#61 <https://github.com/ros-perception/image_transport_plugins/issues/61>)
+  * Contributors: Johannes Meyer, Kenji Brameld, Lucas Walter, Max Schwarz, Michael Carroll, ijnek, v4hn
+
+ -- Kenji Brameld <kenjibrameld@gmail.com>  Mon, 30 Jan 2023 06:00:00 -0000
+
+ros-noetic-compressed-image-transport (1.14.0-1buster) buster; urgency=high
+
+  * Bump CMake version to avoid CMP0048 warning (#53 <https://github.com/ros-perception/image_transport_plugins/issues/53>)
+  * add params for jpeg compression #35 <https://github.com/ros-perception/image_transport_plugins/issues/35>
+  * fixed warning when resubscribing #25 <https://github.com/ros-perception/image_transport_plugins/issues/25>
+  * Fix binary install locations for Windows build #34 <https://github.com/ros-perception/image_transport_plugins/issues/34>
+  * Add legacy constants when using opencv4 #32 <https://github.com/ros-perception/image_transport_plugins/issues/32>
+  * fixed warning 'Tried to advertise a service that is already advertised in this node'
+  * Contributors: Alejandro Hernández Cordero, David Gossow, Hans Gaiser, Sean Yen, Till Grenzdörffer, Yuki Furuta
+
+ -- Kenji Brameld <kenjibrameld@gmail.com>  Thu, 14 May 2020 05:00:00 -0000
+
+ros-noetic-compressed-image-transport (1.9.5-1buster) buster; urgency=high
+
+
+
+ -- Kenji Brameld <kenjibrameld@gmail.com>  Mon, 03 Oct 2016 05:00:00 -0000
+
+ros-noetic-compressed-image-transport (1.9.4-1buster) buster; urgency=high
+
+  * address gcc6 build error and tune
+    With gcc6, compiling fails with 'stdlib.h: No such file or directory',
+    as including '-isystem /usr/include' breaks with gcc6, cf.,
+    https://gcc.gnu.org/bugzilla/show_bug.cgi?id=70129.
+    This commit addresses this issue for this package in the same way
+    it was addressed in various other ROS packages. A list of related
+    commits and pull requests is at:
+    https://github.com/ros/rosdistro/issues/12783
+    Signed-off-by: Lukas Bulwahn <mailto:lukas.bulwahn@oss.bmw-carit.de>
+  * Contributors: Lukas Bulwahn
+
+ -- Kenji Brameld <kenjibrameld@gmail.com>  Sun, 02 Oct 2016 05:00:00 -0000
+
+ros-noetic-compressed-image-transport (1.9.3-1buster) buster; urgency=high
+
+  * remove useless tf dependencies
+  * Using cfg-defined constants
+  * Changed flag name, and corrected typo in flag use.
+  * using IMREAD flags.
+  * Updated for indigo-devel
+  * Contributors: Cedric Pradalier, Vincent Rabaud
+
+ -- Kenji Brameld <kenjibrameld@gmail.com>  Sun, 17 Jan 2016 06:00:00 -0000
+
+ros-noetic-compressed-image-transport (1.9.2-1buster) buster; urgency=high
+
+  * get code to compile with OpenCV3
+  * avoid yet another image copy
+  * avoid copying data if it can be shared
+  * Contributors: Vincent Rabaud
+
+ -- Kenji Brameld <kenjibrameld@gmail.com>  Sat, 25 Apr 2015 05:00:00 -0000
+
+ros-noetic-compressed-image-transport (1.9.1-1buster) buster; urgency=high
+
+
+
+ -- Kenji Brameld <kenjibrameld@gmail.com>  Fri, 18 Jul 2014 05:00:00 -0000
+
+ros-noetic-compressed-image-transport (1.9.0-1buster) buster; urgency=high
+
+
+
+ -- Kenji Brameld <kenjibrameld@gmail.com>  Fri, 16 May 2014 05:00:00 -0000
+
+ros-noetic-compressed-image-transport (1.8.21-1buster) buster; urgency=high
+
+  * maintainer: david gossow
+  * Contributors: David Gossow
+
+ -- Kenji Brameld <kenjibrameld@gmail.com>  Thu, 27 Jun 2013 05:00:00 -0000
+
+ros-noetic-compressed-image-transport (1.8.20-1buster) buster; urgency=high
+
+  * 1.8.19 -> 1.8.20
+  * Contributors: Julius Kammerl
+
+ -- Kenji Brameld <kenjibrameld@gmail.com>  Mon, 18 Mar 2013 05:00:00 -0000
+
+ros-noetic-compressed-image-transport (1.8.19-1buster) buster; urgency=high
+
+  * 1.8.18 -> 1.8.19
+  * Contributors: Julius Kammerl
+
+ -- Kenji Brameld <kenjibrameld@gmail.com>  Sun, 24 Feb 2013 06:00:00 -0000
+
+ros-noetic-compressed-image-transport (1.8.18-1buster) buster; urgency=high
+
+  * 1.8.17 -> 1.8.18
+  * fixing input format checks (enabling rgba, bgra) + minor fixes
+  * Contributors: Julius Kammerl
+
+ -- Kenji Brameld <kenjibrameld@gmail.com>  Thu, 07 Feb 2013 23:59:00 -0000
+
+ros-noetic-compressed-image-transport (1.8.17-1buster) buster; urgency=high
+
+  * 1.8.16 -> 1.8.17
+  * Contributors: Julius Kammerl
+
+ -- Kenji Brameld <kenjibrameld@gmail.com>  Fri, 18 Jan 2013 06:00:00 -0000
+
+ros-noetic-compressed-image-transport (1.8.16-1buster) buster; urgency=high
+
+  * 1.8.15 -> 1.8.16
+  * use the pluginlib script to remove some runtime warnings
+  * Contributors: Julius Kammerl, Vincent Rabaud
+
+ -- Kenji Brameld <kenjibrameld@gmail.com>  Thu, 17 Jan 2013 06:00:00 -0000
+
+ros-noetic-compressed-image-transport (1.8.15-1buster) buster; urgency=high
+
+  * fix typo
+  * Contributors: Vincent Rabaud
+
+ -- Kenji Brameld <kenjibrameld@gmail.com>  Sat, 29 Dec 2012 02:11:00 -0000
+
+ros-noetic-compressed-image-transport (1.8.14-1buster) buster; urgency=high
+
+  * fix the bad xml naming
+  * Contributors: Vincent Rabaud
+
+ -- Kenji Brameld <kenjibrameld@gmail.com>  Sat, 29 Dec 2012 02:02:00 -0000
+
+ros-noetic-compressed-image-transport (1.8.13-1buster) buster; urgency=high
+
+  * fix the bad exports
+  * make sure the plugins are visible by image_transport
+  * added license headers to various cpp and h files
+  * Contributors: Aaron Blasdel, Vincent Rabaud
+
+ -- Kenji Brameld <kenjibrameld@gmail.com>  Sat, 29 Dec 2012 01:06:00 -0000
+
+ros-noetic-compressed-image-transport (1.8.12-1buster) buster; urgency=high
+
+  * fix downstream stuff in cmake
+  * Contributors: Dirk Thomas
+
+ -- Kenji Brameld <kenjibrameld@gmail.com>  Thu, 20 Dec 2012 01:30:00 -0000
+
+ros-noetic-compressed-image-transport (1.8.11-1buster) buster; urgency=high
+
+  * fix cmake order
+  * Contributors: Dirk Thomas
+
+ -- Kenji Brameld <kenjibrameld@gmail.com>  Wed, 19 Dec 2012 23:17:00 -0000
+
+ros-noetic-compressed-image-transport (1.8.10-1buster) buster; urgency=high
+
+  * fix dyn reconf
+  * Contributors: Dirk Thomas
+
+ -- Kenji Brameld <kenjibrameld@gmail.com>  Wed, 19 Dec 2012 23:03:00 -0000
+
+ros-noetic-compressed-image-transport (1.8.9-1buster) buster; urgency=high
+
+  * switching to verion 1.8.9
+  * fixing dynamic_reconfigure related catkin errors
+  * Contributors: Julius Kammerl
+
+ -- Kenji Brameld <kenjibrameld@gmail.com>  Wed, 19 Dec 2012 06:26:00 -0000
+
+ros-noetic-compressed-image-transport (1.8.8-1buster) buster; urgency=high
+
+  * adding build_deb on message_generation & mrun_deb on message_runtime
+  * Updated package.xml for new buildtool_depend tag for catkin requirement
+  * Contributors: Julius Kammerl, mirzashah
+
+ -- Kenji Brameld <kenjibrameld@gmail.com>  Mon, 17 Dec 2012 06:00:00 -0000
+
+ros-noetic-compressed-image-transport (1.8.7-1buster) buster; urgency=high
+
+  * adding missing tf build dependency
+  * Contributors: Julius Kammerl
+
+ -- Kenji Brameld <kenjibrameld@gmail.com>  Mon, 10 Dec 2012 21:29:00 -0000
+
+ros-noetic-compressed-image-transport (1.8.6-1buster) buster; urgency=high
+
+  * switching to version 1.8.6
+  * Contributors: Julius Kammerl
+
+ -- Kenji Brameld <kenjibrameld@gmail.com>  Mon, 10 Dec 2012 21:08:00 -0000
+
+ros-noetic-compressed-image-transport (1.8.5-1buster) buster; urgency=high
+
+  * adding missing build debs
+  * added class_loader_hide_library_symbols macros to CMakeList
+  * switching to 1.8.5
+  * fixing compressed color format to comply with opencv api
+  * Contributors: Julius Kammerl
+
+ -- Kenji Brameld <kenjibrameld@gmail.com>  Sun, 09 Dec 2012 06:00:00 -0000
+
+ros-noetic-compressed-image-transport (1.8.4-1buster) buster; urgency=high
+
+  * switching to version 1.8.4
+  * adding plugin.xml exports for pluginlib
+  * catkinizing theora_image_transport
+  * github migration from code.ros.org (r40053)
+  * image_transport_plugins: Updated manifests to have better summaries, correct URLs.
+  * compressed_image_transport: Some todos.
+  * compressed_image_transport: Copy connection header to output Image, #4250 <https://github.com/ros-perception/image_transport_plugins/issues/4250>.
+  * Added Ubuntu platform tags to manifest
+  * compressed_image_transport: Fixed swapping of R & B channels in data field.
+  * compressed_image_transport: Fixed bug in lookup of format parameter.
+  * getParam -> getParamCached
+  * Switch to opencv2
+  * compressed_image_transport: Renamed parameters, which are now searched up the parameter tree.
+  * compressed_image_transport: Updated for compatibility with post-0.1 image_transport.
+  * image_transport_plugins: Initial stack check-in. Includes theora_image_transport, compressed_image_transport and libtheora. Currently depends on opencv, but may excise this in the future.
+  * Contributors: Julius Kammerl, gerkey, jamesb, mihelich, pmihelich
+
+ -- Kenji Brameld <kenjibrameld@gmail.com>  Fri, 30 Nov 2012 06:00:00 -0000
+
+
