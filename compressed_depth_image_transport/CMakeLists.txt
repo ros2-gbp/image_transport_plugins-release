@@ -1,53 +1,52 @@
-cmake_minimum_required(VERSION 3.5)
-
+cmake_minimum_required(VERSION 3.0.2)
 project(compressed_depth_image_transport)
 
-# Default to C++14
-if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 14)
+if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+#  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
 endif()
-if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  add_compile_options(-Wall -Wextra -Wpedantic)
-endif()
-find_package(ament_cmake REQUIRED)
-find_package(image_transport REQUIRED)
-find_package(cv_bridge REQUIRED)
-find_package(pluginlib REQUIRED)
-find_package(rclcpp REQUIRED)
-find_package(sensor_msgs REQUIRED)
+
 find_package(OpenCV REQUIRED)
+find_package(catkin REQUIRED cv_bridge dynamic_reconfigure image_transport)
 
-include_directories(include ${OpenCV_INCLUDE_DIRS})
+# generate the dynamic_reconfigure config file
+generate_dynamic_reconfigure_options(cfg/CompressedDepthPublisher.cfg)
 
-add_library(
-    ${PROJECT_NAME}
-    SHARED
-    src/compressed_depth_publisher.cpp
-    src/compressed_depth_subscriber.cpp
-    src/manifest.cpp src/codec.cpp
+catkin_package(
+  INCLUDE_DIRS include
+  LIBRARIES ${PROJECT_NAME}
+  CATKIN_DEPENDS cv_bridge dynamic_reconfigure image_transport
+  DEPENDS OpenCV
 )
 
-target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBRARIES})
+include_directories(include ${catkin_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS})
 
-ament_target_dependencies(${PROJECT_NAME}
-  "image_transport"
-  "cv_bridge"
-  "rclcpp"
-  "pluginlib"
-  "sensor_msgs"
-)
+set(SOURCE_FILES src/compressed_depth_publisher.cpp src/compressed_depth_subscriber.cpp src/manifest.cpp src/codec.cpp src/rvl_codec.cpp)
+add_library(${PROJECT_NAME} ${SOURCE_FILES})
+add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_gencfg)
+target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
+
+class_loader_hide_library_symbols(${PROJECT_NAME})
 
 install(TARGETS ${PROJECT_NAME}
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
+)
+install(DIRECTORY include/${PROJECT_NAME}/
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
 )
 
-install(
-  DIRECTORY "include/"
-  DESTINATION include
+# add xml file
+install(FILES compressed_depth_plugins.xml
+        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
-pluginlib_export_plugin_description_file(image_transport
-    compressed_depth_plugins.xml)
 
-ament_package()
+if(CATKIN_ENABLE_TESTING)
+  # Build ${PROJECT_NAME}_test library with symbols exported.
+  add_library(${PROJECT_NAME}_test ${SOURCE_FILES})
+  add_dependencies(${PROJECT_NAME}_test ${PROJECT_NAME}_gencfg)
+  target_link_libraries(${PROJECT_NAME}_test ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
+
+  catkin_add_gtest(rvl_codec_test test/rvl_codec_test.cpp)
+  target_link_libraries(rvl_codec_test ${PROJECT_NAME}_test)
+endif()

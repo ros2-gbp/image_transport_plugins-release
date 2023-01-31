@@ -1,13 +1,13 @@
 /*********************************************************************
 * Software License Agreement (BSD License)
-*
+* 
 *  Copyright (c) 2012, Willow Garage, Inc.
 *  All rights reserved.
-*
+* 
 *  Redistribution and use in source and binary forms, with or without
 *  modification, are permitted provided that the following conditions
 *  are met:
-*
+* 
 *   * Redistributions of source code must retain the above copyright
 *     notice, this list of conditions and the following disclaimer.
 *   * Redistributions in binary form must reproduce the above
@@ -17,7 +17,7 @@
 *   * Neither the name of the Willow Garage nor the names of its
 *     contributors may be used to endorse or promote products derived
 *     from this software without specific prior written permission.
-*
+* 
 *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
 *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -32,61 +32,39 @@
 *  POSSIBILITY OF SUCH DAMAGE.
 *********************************************************************/
 
-#include <string>
-
-#include <sensor_msgs/msg/image.hpp>
-#include <sensor_msgs/msg/compressed_image.hpp>
-#include <image_transport/simple_publisher_plugin.hpp>
-
-#include <rclcpp/node.hpp>
+#include "image_transport/simple_publisher_plugin.h"
+#include <sensor_msgs/CompressedImage.h>
+#include <dynamic_reconfigure/server.h>
+#include <compressed_image_transport/CompressedPublisherConfig.h>
 
 namespace compressed_image_transport {
 
-using CompressedImage = sensor_msgs::msg::CompressedImage;
-
-class CompressedPublisher : public image_transport::SimplePublisherPlugin<CompressedImage>
+class CompressedPublisher : public image_transport::SimplePublisherPlugin<sensor_msgs::CompressedImage>
 {
 public:
-  CompressedPublisher(): logger_(rclcpp::get_logger("CompressedPublisher")) {}
-  ~CompressedPublisher() override = default;
+  virtual ~CompressedPublisher() {}
 
-  std::string getTransportName() const override
+  virtual std::string getTransportName() const
   {
     return "compressed";
   }
 
 protected:
   // Overridden to set up reconfigure server
-  void advertiseImpl(
-      rclcpp::Node* node,
-      const std::string& base_topic,
-      rmw_qos_profile_t custom_qos,
-      rclcpp::PublisherOptions options) override;
+  virtual void advertiseImpl(ros::NodeHandle &nh, const std::string &base_topic, uint32_t queue_size,
+                             const image_transport::SubscriberStatusCallback  &user_connect_cb,
+                             const image_transport::SubscriberStatusCallback  &user_disconnect_cb,
+                             const ros::VoidPtr &tracked_object, bool latch);
+  
+  virtual void publish(const sensor_msgs::Image& message,
+                       const PublishFn& publish_fn) const;
 
-  void publish(const sensor_msgs::msg::Image& message,
-               const PublishFn& publish_fn) const;
-
-  struct Config {
-    // Compression format to use "jpeg", "png" or "tiff".
-    std::string format;
-
-    // PNG Compression Level from 0 to 9.  A higher value means a smaller size.
-    // Default to OpenCV default of 3
-    int png_level;
-
-    // JPEG Quality from 0 to 100 (higher is better quality).
-    // Default to OpenCV default of 95.
-    int jpeg_quality;
-
-    // TIFF resolution unit
-    // Can be one of "none", "inch", "centimeter".
-    std::string tiff_res_unit;
-    int tiff_xdpi;
-    int tiff_ydpi;
-  };
-
+  typedef compressed_image_transport::CompressedPublisherConfig Config;
+  typedef dynamic_reconfigure::Server<Config> ReconfigureServer;
+  boost::shared_ptr<ReconfigureServer> reconfigure_server_;
   Config config_;
-  rclcpp::Logger logger_;
+
+  void configCb(Config& config, uint32_t level);
 };
 
 } //namespace compressed_image_transport

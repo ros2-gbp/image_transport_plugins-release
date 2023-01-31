@@ -34,20 +34,15 @@
 
 #include "compressed_depth_image_transport/compressed_depth_publisher.h"
 #include <cv_bridge/cv_bridge.h>
-#include <sensor_msgs/image_encodings.hpp>
+#include <sensor_msgs/image_encodings.h>
 #include <opencv2/highgui/highgui.hpp>
+#include <boost/make_shared.hpp>
 
 #include "compressed_depth_image_transport/codec.h"
 #include "compressed_depth_image_transport/compression_common.h"
 
-#include <rclcpp/parameter_client.hpp>
-
 #include <vector>
 #include <sstream>
-
-constexpr int kDefaultPngLevel = 9;
-constexpr double kDefaultDepthMax = 10.0;
-constexpr double KDefaultDepthQuantization = 100.0;
 
 using namespace cv;
 using namespace std;
@@ -57,29 +52,30 @@ namespace enc = sensor_msgs::image_encodings;
 namespace compressed_depth_image_transport
 {
 
-void CompressedDepthPublisher::advertiseImpl(
-  rclcpp::Node * node,
-  const std::string& base_topic,
-  rmw_qos_profile_t custom_qos,
-  rclcpp::PublisherOptions options)
+void CompressedDepthPublisher::advertiseImpl(ros::NodeHandle &nh, const std::string &base_topic, uint32_t queue_size,
+                                        const image_transport::SubscriberStatusCallback &user_connect_cb,
+                                        const image_transport::SubscriberStatusCallback &user_disconnect_cb,
+                                        const ros::VoidPtr &tracked_object, bool latch)
 {
-  typedef image_transport::SimplePublisherPlugin<sensor_msgs::msg::CompressedImage> Base;
-  Base::advertiseImpl(node, base_topic, custom_qos, options);
+  typedef image_transport::SimplePublisherPlugin<sensor_msgs::CompressedImage> Base;
+  Base::advertiseImpl(nh, base_topic, queue_size, user_connect_cb, user_disconnect_cb, tracked_object, latch);
 
-  node->get_parameter_or<int>("png_level", config_.png_level, kDefaultPngLevel);
-  node->get_parameter_or<double>("depth_max", config_.depth_max, kDefaultDepthMax);
-  node->get_parameter_or<double>("depth_quantization", config_.depth_max, KDefaultDepthQuantization);
+  // Set up reconfigure server for this topic
+  reconfigure_server_ = boost::make_shared<ReconfigureServer>(this->nh());
+  ReconfigureServer::CallbackType f = boost::bind(&CompressedDepthPublisher::configCb, this, boost::placeholders::_1, boost::placeholders::_2);
+  reconfigure_server_->setCallback(f);
 }
 
-void CompressedDepthPublisher::publish(
-  const sensor_msgs::msg::Image& message,
-  const PublishFn& publish_fn) const
+void CompressedDepthPublisher::configCb(Config& config, uint32_t level)
 {
-  sensor_msgs::msg::CompressedImage::SharedPtr compressed_image =
-    encodeCompressedDepthImage(message,
-                               config_.depth_max,
-                               config_.depth_quantization,
-                               config_.png_level);
+  config_ = config;
+}
+
+void CompressedDepthPublisher::publish(const sensor_msgs::Image& message, const PublishFn& publish_fn) const
+{
+  sensor_msgs::CompressedImage::Ptr compressed_image =
+      encodeCompressedDepthImage(message, config_.format, config_.depth_max, config_.depth_quantization, config_.png_level);
+
   if (compressed_image)
   {
     publish_fn(*compressed_image);

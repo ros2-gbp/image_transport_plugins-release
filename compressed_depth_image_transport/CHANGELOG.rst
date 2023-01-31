@@ -2,47 +2,24 @@
 Changelog for package compressed_depth_image_transport
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-2.6.0 (2022-08-16)
-------------------
-* Fix advertiseImpl() in compressed_depth_publisher and subscribeImpl() in compressed_depth_subscriber. (`#106 <https://github.com/ros-perception/image_transport_plugins/issues/106>`_)
-* Contributors: Ivan Santiago Paunovic
+1.15.0 (2023-01-30)
+-------------------
+* Update maintainer in ros1 branches (`#132 <https://github.com/ros-perception/image_transport_plugins/issues/132>`_)
+* Fix number of elements in vector parameter to call cv::imencode for OpenCV 4.7 (`#130 <https://github.com/ros-perception/image_transport_plugins/issues/130>`_)
+* Fix uninitialized memory usage (`#125 <https://github.com/ros-perception/image_transport_plugins/issues/125>`_)
+* Make the default compressed depth png_level 1 instead of 9 to save cpu (`#85 <https://github.com/ros-perception/image_transport_plugins/issues/85>`_)
+  The default 9 is so cpu intensive to be frequently unusable and results in many dropped frames, and there is still plenty of bandwidth savings from the compression at level 1.
+* Fix copyright year 20012 -> 2012 (`#80 <https://github.com/ros-perception/image_transport_plugins/issues/80>`_)
+* Fix regression in compressed_depth_image_transport with old bags (`#64 <https://github.com/ros-perception/image_transport_plugins/issues/64>`_)
+* Contributors: Johannes Meyer, Kenji Brameld, Lucas Walter, Martin Pecka, Michael Carroll, Timm Linder, ijnek, v4hn
 
-2.5.0 (2022-04-18)
-------------------
-
-2.3.2 (2022-02-18)
-------------------
-* Fix copyright year 20012 -> 2012 (`#79 <https://github.com/ros-perception/image_transport_plugins/issues/79>`_)
-* JPEG only supports 8 bits images (`#73 <https://github.com/ros-perception/image_transport_plugins/issues/73>`_)
-* Contributors: Ivan Santiago Paunovic, Michael Carroll
-
-2.3.1 (2021-07-13)
-------------------
-
-2.3.0 (2020-05-28)
-------------------
-* Use non-deprecated image_transport headers (`#59 <https://github.com/ros-perception/image_transport_plugins/issues/59>`_)
-* Contributors: Michael Carroll
-
-2.2.1 (2019-10-23)
-------------------
-
-2.2.0 (2019-09-27)
-------------------
-
-2.1.0 (2019-08-23)
-------------------
-* Merge pull request `#33 <https://github.com/ros-perception/image_transport_plugins/issues/33>`_ from klintan/ros2
-  [ROS2] Fixed portability warning for compressed depth plugin.
-* fixed portability warning for name
-* Contributors: Andreas Klintberg, David Gossow
-
-2.0.0 (2018-12-13)
-------------------
-* Pointer api updates (`#31 <https://github.com/ros-perception/image_transport_plugins/issues/31>`_)
-* Bring ros2-devel back into ros2 mainline. (`#29 <https://github.com/ros-perception/image_transport_plugins/issues/29>`_)
-* Update compressed_image_transport to ros2 (`#26 <https://github.com/ros-perception/image_transport_plugins/issues/26>`_)
-* Contributors: Michael Carroll, Jose Luis Rivero
+1.14.0 (2020-05-14)
+-------------------
+* Bump CMake version to avoid CMP0048 warning (`#53 <https://github.com/ros-perception/image_transport_plugins/issues/53>`_)
+* Add depth compression by RVL `#42 <https://github.com/ros-perception/image_transport_plugins/issues/42>`_
+* Fix binary install locations for Windows build `#34 <https://github.com/ros-perception/image_transport_plugins/issues/34>`_
+* Add legacy constants when using opencv4 `#32 <https://github.com/ros-perception/image_transport_plugins/issues/32>`_
+* Contributors: Alejandro Hernández Cordero, David Gossow, Hans Gaiser, Sean Yen, Shuntaro Yamazaki
 
 1.9.5 (2016-10-03)
 ------------------
@@ -52,7 +29,7 @@ Changelog for package compressed_depth_image_transport
 1.9.4 (2016-10-02)
 ------------------
 * address gcc6 build error and tune
-  With gcc6, compiling fails with `stdlib.h: No such file or directory`,
+  With gcc6, compiling fails with 'stdlib.h: No such file or directory',
   as including '-isystem /usr/include' breaks with gcc6, cf.,
   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=70129.
   This commit addresses this issue for this package in the same way

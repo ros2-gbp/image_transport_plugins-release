@@ -41,10 +41,7 @@ namespace compressed_image_transport
 // Compression formats
 enum compressionFormat
 {
-  UNDEFINED = -1,
-  JPEG = 0,
-  PNG = 1,
-  TIFF = 2,
+  UNDEFINED = -1, JPEG, PNG
 };
 
 } //namespace compressed_image_transport

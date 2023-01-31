@@ -1,13 +1,13 @@
 /*********************************************************************
 * Software License Agreement (BSD License)
-*
+* 
 *  Copyright (c) 2012, Willow Garage, Inc.
 *  All rights reserved.
-*
+* 
 *  Redistribution and use in source and binary forms, with or without
 *  modification, are permitted provided that the following conditions
 *  are met:
-*
+* 
 *   * Redistributions of source code must retain the above copyright
 *     notice, this list of conditions and the following disclaimer.
 *   * Redistributions in binary form must reproduce the above
@@ -17,7 +17,7 @@
 *   * Neither the name of the Willow Garage nor the names of its
 *     contributors may be used to endorse or promote products derived
 *     from this software without specific prior written permission.
-*
+* 
 *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
 *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -32,8 +32,10 @@
 *  POSSIBILITY OF SUCH DAMAGE.
 *********************************************************************/
 
-#include <image_transport/simple_subscriber_plugin.hpp>
-#include <theora_image_transport/msg/packet.hpp>
+#include <image_transport/simple_subscriber_plugin.h>
+#include <dynamic_reconfigure/server.h>
+#include <theora_image_transport/TheoraSubscriberConfig.h>
+#include <theora_image_transport/Packet.h>
 
 #include <theora/codec.h>
 #include <theora/theoraenc.h>
@@ -41,7 +43,7 @@
 
 namespace theora_image_transport {
 
-class TheoraSubscriber : public image_transport::SimpleSubscriberPlugin<theora_image_transport::msg::Packet>
+class TheoraSubscriber : public image_transport::SimpleSubscriberPlugin<theora_image_transport::Packet>
 {
 public:
   TheoraSubscriber();
@@ -51,33 +53,33 @@ public:
 
 protected:
   // Overridden to bump queue_size, otherwise we might lose headers
-  void subscribeImpl(
-    rclcpp::Node* node,
-    const std::string &base_topic,
-    const Callback & callback,
-    rmw_qos_profile_t custom_qos,
-    rclcpp::SubscriptionOptions options) override;
+  // Overridden to tweak arguments and set up reconfigure server
+  virtual void subscribeImpl(ros::NodeHandle &nh, const std::string &base_topic, uint32_t queue_size,
+                             const Callback &callback, const ros::VoidPtr &tracked_object,
+                             const image_transport::TransportHints &transport_hints);
+  
+  // The function that does the actual decompression and calls a user supplied callback with the resulting image
+  virtual void internalCallback(const theora_image_transport::PacketConstPtr &msg, const Callback& user_cb);
 
-  // The function that does the actual decompression and calls a user supplied
-  // callback with the resulting image
-  virtual void internalCallback(const theora_image_transport::msg::Packet::ConstSharedPtr &msg,
-                                const Callback& user_cb);
+  // Dynamic reconfigure support
+  typedef theora_image_transport::TheoraSubscriberConfig Config;
+  typedef dynamic_reconfigure::Server<Config> ReconfigureServer;
+  boost::shared_ptr<ReconfigureServer> reconfigure_server_;
+  int pplevel_; // Post-processing level
+
+  void configCb(Config& config, uint32_t level);
 
   // Utility functions
   int updatePostProcessingLevel(int level);
-  void msgToOggPacket(const theora_image_transport::msg::Packet &msg,
-                      ogg_packet &ogg);
+  void msgToOggPacket(const theora_image_transport::Packet &msg, ogg_packet &ogg);
 
-  int pplevel_; // Post-processing level
   bool received_header_;
   bool received_keyframe_;
   th_dec_ctx* decoding_context_;
   th_info header_info_;
   th_comment header_comment_;
   th_setup_info* setup_info_;
-  sensor_msgs::msg::Image::SharedPtr latest_image_;
-
-  rclcpp::Logger logger_;
+  sensor_msgs::ImagePtr latest_image_;
 };
 
 } //namespace theora_image_transport

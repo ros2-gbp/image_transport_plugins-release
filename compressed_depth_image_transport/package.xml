@@ -1,23 +1,29 @@
-<package format="2">
+<package>
   <name>compressed_depth_image_transport</name>
-  <version>2.6.0</version>
+  <version>1.15.0</version>
   <description>
     Compressed_depth_image_transport provides a plugin to image_transport for transparently sending
     depth images (raw, floating-point) using PNG compression.
   </description>
-  <maintainer email="dgossow@willowgarage.com">David Gossow</maintainer>
+  <maintainer email="kenjibrameld@gmail.com">Kenji Brameld</maintainer>
   <license>BSD</license>
 
   <url type="website">http://www.ros.org/wiki/image_transport_plugins</url>
   <author>Julius Kammerl</author>
+  <author>David Gossow</author>
 
-  <buildtool_depend>ament_cmake</buildtool_depend>
+  <buildtool_depend>catkin</buildtool_depend>
 
-  <depend>cv_bridge</depend>
-  <depend>image_transport</depend>
+  <build_depend>cv_bridge</build_depend>
+  <build_depend>dynamic_reconfigure</build_depend>
+  <build_depend>image_transport</build_depend>
+
+  <run_depend>cv_bridge</run_depend>
+  <run_depend>dynamic_reconfigure</run_depend>
+  <run_depend>image_transport</run_depend>
 
   <export>
-    <build_type>ament_cmake</build_type>
+    <rviz plugin="${prefix}/plugin_description.xml"/>
     <image_transport plugin="${prefix}/compressed_depth_plugins.xml" />
   </export>
 </package>

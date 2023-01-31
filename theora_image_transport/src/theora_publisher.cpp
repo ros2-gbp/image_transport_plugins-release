@@ -1,13 +1,13 @@
 /*********************************************************************
 * Software License Agreement (BSD License)
-*
+* 
 *  Copyright (c) 2012, Willow Garage, Inc.
 *  All rights reserved.
-*
+* 
 *  Redistribution and use in source and binary forms, with or without
 *  modification, are permitted provided that the following conditions
 *  are met:
-*
+* 
 *   * Redistributions of source code must retain the above copyright
 *     notice, this list of conditions and the following disclaimer.
 *   * Redistributions in binary form must reproduce the above
@@ -17,7 +17,7 @@
 *   * Neither the name of the Willow Garage nor the names of its
 *     contributors may be used to endorse or promote products derived
 *     from this software without specific prior written permission.
-*
+* 
 *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
 *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -33,25 +33,23 @@
 *********************************************************************/
 
 #include "theora_image_transport/theora_publisher.h"
+#include <sensor_msgs/image_encodings.h>
+#include <std_msgs/Header.h>
 
-#include <rclcpp/logging.hpp>
-#include <sensor_msgs/image_encodings.hpp>
-#include <std_msgs/msg/header.hpp>
-
-#include <cstdio> //for memcpy
 #include <vector>
+#include <cstdio> //for memcpy
+
 #include <opencv2/imgproc/imgproc.hpp>
 
 using namespace std;
 
 namespace theora_image_transport {
 
-TheoraPublisher::TheoraPublisher():
-  logger_(rclcpp::get_logger("TheoraPublisher"))
+TheoraPublisher::TheoraPublisher()
 {
   // Initialize info structure fields that don't change
   th_info_init(&encoder_setup_);
-
+  
   encoder_setup_.pic_x = 0;
   encoder_setup_.pic_y = 0;
   encoder_setup_.colorspace = TH_CS_UNSPECIFIED;
@@ -71,69 +69,81 @@ TheoraPublisher::~TheoraPublisher()
   th_info_clear(&encoder_setup_);
 }
 
-void TheoraPublisher::advertiseImpl(
-  rclcpp::Node *node,
-  const std::string &base_topic,
-  rmw_qos_profile_t custom_qos,
-  rclcpp::PublisherOptions options)
+void TheoraPublisher::advertiseImpl(ros::NodeHandle &nh, const std::string &base_topic, uint32_t queue_size,
+                                    const image_transport::SubscriberStatusCallback  &user_connect_cb,
+                                    const image_transport::SubscriberStatusCallback  &user_disconnect_cb,
+                                    const ros::VoidPtr &tracked_object, bool latch)
 {
-  logger_ = node->get_logger();
+  // queue_size doesn't account for the 3 header packets, so we correct (with a little extra) here.
+  queue_size += 4;
+  // Latching doesn't make a lot of sense with this transport. Could try to save the last keyframe,
+  // but do you then send all following delta frames too?
+  latch = false;
+  typedef image_transport::SimplePublisherPlugin<theora_image_transport::Packet> Base;
+  Base::advertiseImpl(nh, base_topic, queue_size, user_connect_cb, user_disconnect_cb, tracked_object, latch);
 
-  typedef image_transport::SimplePublisherPlugin<theora_image_transport::msg::Packet> Base;
-  Base::advertiseImpl(node, base_topic, custom_qos, options);
+  // Set up reconfigure server for this topic
+  reconfigure_server_ = boost::make_shared<ReconfigureServer>(this->nh());
+  ReconfigureServer::CallbackType f = boost::bind(&TheoraPublisher::configCb, this, boost::placeholders::_1, boost::placeholders::_2);
+  reconfigure_server_->setCallback(f);
 }
 
-  // TODO(ros2): this method should be called when configuration change through
-  // user events. It was previosly used by Dynamic Reconfigure in ROS1
-  //
-  //void TheoraPublisher::configCb(Config& config, uint32_t level)
-  //{
-  //  // target_bitrate must be 0 if we're using quality.
-  //  long bitrate = 0;
-  //  if (config.optimize_for == theora_image_transport::TheoraPublisher_Bitrate)
-  //    bitrate = config.target_bitrate;
-  //  bool update_bitrate = bitrate && encoder_setup_.target_bitrate != bitrate;
-  //  bool update_quality = !bitrate && ((encoder_setup_.quality != config.quality) || encoder_setup_.target_bitrate > 0);
-  //  encoder_setup_.quality = config.quality;
-  //  encoder_setup_.target_bitrate = bitrate;
-  //  keyframe_frequency_ = config.keyframe_frequency;
-  //
-  //  if (encoding_context_) {
-  //    int err = 0;
-  //    // libtheora 1.1 lets us change quality or bitrate on the fly, 1.0 does not.
-  //#ifdef TH_ENCCTL_SET_BITRATE
-  //    if (update_bitrate) {
-  //      err = th_encode_ctl(encoding_context_.get(), TH_ENCCTL_SET_BITRATE, &bitrate, sizeof(long));
-  //      if (err)
-  //        RCLCPP_ERROR(node_->get_logger(), "Failed to update bitrate dynamically");
-  //    }
-  //#else
-  //    err |= update_bitrate;
-  //#endif
-  //
-  //#ifdef TH_ENCCTL_SET_QUALITY
-  //    if (update_quality) {
-  //      err = th_encode_ctl(encoding_context_.get(), TH_ENCCTL_SET_QUALITY, &config.quality, sizeof(int));
-  //      // In 1.1 above call will fail if a bitrate has previously been set. That restriction may
-  //      // be relaxed in a future version. Complain on other failures.
-  //      if (err && err != TH_EINVAL)
-  //        RCLCPP_ERROR(node_->get_logger(), "Failed to update quality dynamically");
-  //    }
-  //#else
-  //    err |= update_quality;
-  //#endif
-  //
-  //    // If unable to change parameters dynamically, just create a new encoding context.
-  //    if (err) {
-  //      encoding_context_.reset();
-  //    }
-  //    // Otherwise, do the easy updates and keep going!
-  //    else {
-  //      updateKeyframeFrequency();
-  //      config.keyframe_frequency = keyframe_frequency_; // In case desired value was unattainable
-  //    }
-  //  }
-  //}
+void TheoraPublisher::configCb(Config& config, uint32_t level)
+{
+  // target_bitrate must be 0 if we're using quality.
+  long bitrate = 0;
+  if (config.optimize_for == theora_image_transport::TheoraPublisher_Bitrate)
+    bitrate = config.target_bitrate;
+  bool update_bitrate = bitrate && encoder_setup_.target_bitrate != bitrate;
+  bool update_quality = !bitrate && ((encoder_setup_.quality != config.quality) || encoder_setup_.target_bitrate > 0);
+  encoder_setup_.quality = config.quality;
+  encoder_setup_.target_bitrate = bitrate;
+  keyframe_frequency_ = config.keyframe_frequency;
+  
+  if (encoding_context_) {
+    int err = 0;
+    // libtheora 1.1 lets us change quality or bitrate on the fly, 1.0 does not.
+#ifdef TH_ENCCTL_SET_BITRATE
+    if (update_bitrate) {
+      err = th_encode_ctl(encoding_context_.get(), TH_ENCCTL_SET_BITRATE, &bitrate, sizeof(long));
+      if (err)
+        ROS_ERROR("Failed to update bitrate dynamically");
+    }
+#else
+    err |= update_bitrate;
+#endif
+
+#ifdef TH_ENCCTL_SET_QUALITY
+    if (update_quality) {
+      err = th_encode_ctl(encoding_context_.get(), TH_ENCCTL_SET_QUALITY, &config.quality, sizeof(int));
+      // In 1.1 above call will fail if a bitrate has previously been set. That restriction may
+      // be relaxed in a future version. Complain on other failures.
+      if (err && err != TH_EINVAL)
+        ROS_ERROR("Failed to update quality dynamically");
+    }
+#else
+    err |= update_quality;
+#endif
+
+    // If unable to change parameters dynamically, just create a new encoding context.
+    if (err) {
+      encoding_context_.reset();
+    }
+    // Otherwise, do the easy updates and keep going!
+    else {
+      updateKeyframeFrequency();
+      config.keyframe_frequency = keyframe_frequency_; // In case desired value was unattainable
+    }
+  }
+}
+
+void TheoraPublisher::connectCallback(const ros::SingleSubscriberPublisher& pub)
+{
+  // Send the header packets to new subscribers
+  for (unsigned int i = 0; i < stream_header_.size(); i++) {
+    pub.publish(stream_header_[i]);
+  }
+}
 
 static void cvToTheoraPlane(cv::Mat& mat, th_img_plane& plane)
 {
@@ -143,8 +153,7 @@ static void cvToTheoraPlane(cv::Mat& mat, th_img_plane& plane)
   plane.data   = mat.data;
 }
 
-void TheoraPublisher::publish(const sensor_msgs::msg::Image& message,
-                              const PublishFn& publish_fn) const
+void TheoraPublisher::publish(const sensor_msgs::Image& message, const PublishFn& publish_fn) const
 {
   if (!ensureEncodingContext(message, publish_fn))
     return;
@@ -161,17 +170,17 @@ void TheoraPublisher::publish(const sensor_msgs::msg::Image& message,
   }
   catch (cv_bridge::Exception& e)
   {
-    RCLCPP_ERROR(logger_, "cv_bridge exception: '%s'", e.what());
+    ROS_ERROR("cv_bridge exception: '%s'", e.what());
     return;
   }
   catch (cv::Exception& e)
   {
-    RCLCPP_ERROR(logger_, "OpenCV exception: '%s'", e.what());
+    ROS_ERROR("OpenCV exception: '%s'", e.what());
     return;
   }
 
   if (cv_image_ptr == 0) {
-    RCLCPP_ERROR(logger_, "Unable to convert from '%s' to 'bgr8'", message.encoding.c_str());
+    ROS_ERROR("Unable to convert from '%s' to 'bgr8'", message.encoding.c_str());
     return;
   }
 
@@ -191,7 +200,7 @@ void TheoraPublisher::publish(const sensor_msgs::msg::Image& message,
   // Convert image to Y'CbCr color space used by Theora
   cv::Mat ycrcb;
   cv::cvtColor(bgr_padded, ycrcb, cv::COLOR_BGR2YCrCb);
-
+  
   // Split channels
   cv::Mat ycrcb_planes[3];
   cv::split(ycrcb, ycrcb_planes);
@@ -210,23 +219,23 @@ void TheoraPublisher::publish(const sensor_msgs::msg::Image& message,
   // Submit frame to the encoder
   int rval = th_encode_ycbcr_in(encoding_context_.get(), ycbcr_buffer);
   if (rval == TH_EFAULT) {
-    RCLCPP_ERROR(logger_, "[theora] EFAULT in submitting uncompressed frame to encoder");
+    ROS_ERROR("[theora] EFAULT in submitting uncompressed frame to encoder");
     return;
   }
   if (rval == TH_EINVAL) {
-    RCLCPP_ERROR(logger_, "[theora] EINVAL in submitting uncompressed frame to encoder");
+    ROS_ERROR("[theora] EINVAL in submitting uncompressed frame to encoder");
     return;
   }
 
   // Retrieve and publish encoded video data packets
   ogg_packet oggpacket;
-  theora_image_transport::msg::Packet output;
+  theora_image_transport::Packet output;
   while ((rval = th_encode_packetout(encoding_context_.get(), 0, &oggpacket)) > 0) {
     oggPacketToMsg(message.header, oggpacket, output);
     publish_fn(output);
   }
   if (rval == TH_EFAULT)
-    RCLCPP_ERROR(logger_, "[theora] EFAULT in retrieving encoded video data packets");
+    ROS_ERROR("[theora] EFAULT in retrieving encoded video data packets");
 }
 
 void freeContext(th_enc_ctx* context)
@@ -234,8 +243,7 @@ void freeContext(th_enc_ctx* context)
   if (context) th_encode_free(context);
 }
 
-bool TheoraPublisher::ensureEncodingContext(const sensor_msgs::msg::Image& image,
-                                            const PublishFn& publish_fn) const
+bool TheoraPublisher::ensureEncodingContext(const sensor_msgs::Image& image, const PublishFn& publish_fn) const
 {
   /// @todo Check if encoding has changed
   if (encoding_context_ && encoder_setup_.pic_width == image.width &&
@@ -252,7 +260,7 @@ bool TheoraPublisher::ensureEncodingContext(const sensor_msgs::msg::Image& image
   // Allocate encoding context. Smart pointer ensures that th_encode_free gets called.
   encoding_context_.reset(th_encode_alloc(&encoder_setup_), freeContext);
   if (!encoding_context_) {
-    RCLCPP_ERROR(logger_, "[theora] Failed to create encoding context");
+    ROS_ERROR("[theora] Failed to create encoding context");
     return false;
   }
 
@@ -260,7 +268,7 @@ bool TheoraPublisher::ensureEncodingContext(const sensor_msgs::msg::Image& image
 
   th_comment comment;
   th_comment_init(&comment);
-  std::shared_ptr<th_comment> clear_guard(&comment, th_comment_clear);
+  boost::shared_ptr<th_comment> clear_guard(&comment, th_comment_clear);
   /// @todo Store image encoding in comment
   comment.vendor = strdup("Willow Garage theora_image_transport");
 
@@ -269,16 +277,15 @@ bool TheoraPublisher::ensureEncodingContext(const sensor_msgs::msg::Image& image
   stream_header_.clear();
   ogg_packet oggpacket;
   while (th_encode_flushheader(encoding_context_.get(), &comment, &oggpacket) > 0) {
-    stream_header_.push_back(theora_image_transport::msg::Packet());
+    stream_header_.push_back(theora_image_transport::Packet());
     oggPacketToMsg(image.header, oggpacket, stream_header_.back());
     publish_fn(stream_header_.back());
   }
   return true;
 }
 
-void TheoraPublisher::oggPacketToMsg(const std_msgs::msg::Header& header,
-                                     const ogg_packet &oggpacket,
-                                     theora_image_transport::msg::Packet &msg) const
+void TheoraPublisher::oggPacketToMsg(const std_msgs::Header& header, const ogg_packet &oggpacket,
+                                     theora_image_transport::Packet &msg) const
 {
   msg.header     = header;
   msg.b_o_s      = oggpacket.b_o_s;
@@ -294,10 +301,10 @@ void TheoraPublisher::updateKeyframeFrequency() const
   ogg_uint32_t desired_frequency = keyframe_frequency_;
   if (th_encode_ctl(encoding_context_.get(), TH_ENCCTL_SET_KEYFRAME_FREQUENCY_FORCE,
                     &keyframe_frequency_, sizeof(ogg_uint32_t)))
-    RCLCPP_ERROR(logger_, "Failed to change keyframe frequency");
+    ROS_ERROR("Failed to change keyframe frequency");
   if (keyframe_frequency_ != desired_frequency)
-    RCLCPP_WARN(logger_, "Couldn't set keyframe frequency to %d, actually set to %d",
-                      desired_frequency, keyframe_frequency_);
+    ROS_WARN("Couldn't set keyframe frequency to %d, actually set to %d",
+             desired_frequency, keyframe_frequency_);
 }
 
 } //namespace theora_image_transport

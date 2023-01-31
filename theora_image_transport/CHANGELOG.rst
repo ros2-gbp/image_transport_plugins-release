@@ -2,54 +2,17 @@
 Changelog for package theora_image_transport
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-2.6.0 (2022-08-16)
-------------------
-* Fix advertiseImpl() in theora_publisher and subscribeImpl() in theora_subscriber. (`#106 <https://github.com/ros-perception/image_transport_plugins/issues/106>`_)
-* Contributors: Ivan Santiago Paunovic
+1.15.0 (2023-01-30)
+-------------------
+* Update maintainer in ros1 branches (`#132 <https://github.com/ros-perception/image_transport_plugins/issues/132>`_)
+* Fix copyright year 20012 -> 2012 (`#80 <https://github.com/ros-perception/image_transport_plugins/issues/80>`_)
+* Contributors: Kenji Brameld, Lucas Walter, Michael Carroll, ijnek, v4hn
 
-2.5.0 (2022-04-18)
-------------------
-* Cleanup the cmake code to be more modern (`#96 <https://github.com/ros-perception/image_transport_plugins/issues/96>`_)
-* Contributors: Chris Lalancette
-
-2.3.2 (2022-02-18)
-------------------
-* Fix copyright year 20012 -> 2012 (`#79 <https://github.com/ros-perception/image_transport_plugins/issues/79>`_)
-* mac fix (`#76 <https://github.com/ros-perception/image_transport_plugins/issues/76>`_)
-* JPEG only supports 8 bits images (`#73 <https://github.com/ros-perception/image_transport_plugins/issues/73>`_)
-* Contributors: Ivan Santiago Paunovic, Michael Carroll, Steve Nogar
-
-2.3.1 (2021-07-13)
-------------------
-* Fix ament_export_dependencies syntax in CMake (`#65 <https://github.com/ros-perception/image_transport_plugins/issues/65>`_)
-* Contributors: Chen Bainian
-
-2.3.0 (2020-05-28)
-------------------
-
-2.2.1 (2019-10-23)
-------------------
-* Remove dependency to ${PROJECT_NAME} (`#46 <https://github.com/ros-perception/image_transport_plugins/issues/46>`_)
-* Contributors: Gaël Écorchard
-
-2.2.0 (2019-09-27)
-------------------
-
-2.1.0 (2019-08-23)
-------------------
-* Fix Dashing deprecation warning. (`#41 <https://github.com/ros-perception/image_transport_plugins/issues/41>`_)
-  Signed-off-by: Michael Carroll <michael@openrobotics.org>
-* Merge pull request `#38 <https://github.com/ros-perception/image_transport_plugins/issues/38>`_ from Kapernikov/ros2
-  Fix theora plugin wrong path (`#37 <https://github.com/ros-perception/image_transport_plugins/issues/37>`_)
-* Fix theora plugin wrong path
-* Contributors: David Gossow, Frank Dekervel, Michael Carroll
-
-2.0.0 (2018-12-13)
-------------------
-* Pointer api updates (`#31 <https://github.com/ros-perception/image_transport_plugins/issues/31>`_)
-* Bring ros2-devel back into ros2 mainline. (`#29 <https://github.com/ros-perception/image_transport_plugins/issues/29>`_)
-* Update compressed_image_transport to ros2 (`#26 <https://github.com/ros-perception/image_transport_plugins/issues/26>`_)
-* Contributors: Michael Carroll, Jose Luis Rivero
+1.14.0 (2020-05-14)
+-------------------
+* Bump CMake version to avoid CMP0048 warning (`#53 <https://github.com/ros-perception/image_transport_plugins/issues/53>`_)
+* Fix binary install locations for Windows build `#34 <https://github.com/ros-perception/image_transport_plugins/issues/34>`_
+* Contributors: Alejandro Hernández Cordero, David Gossow, Sean Yen
 
 1.9.5 (2016-10-03)
 ------------------
@@ -57,7 +20,7 @@ Changelog for package theora_image_transport
 1.9.4 (2016-10-02)
 ------------------
 * address gcc6 build error and tune
-  With gcc6, compiling fails with `stdlib.h: No such file or directory`,
+  With gcc6, compiling fails with 'stdlib.h: No such file or directory',
   as including '-isystem /usr/include' breaks with gcc6, cf.,
   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=70129.
   This commit addresses this issue for this package in the same way
@@ -80,7 +43,7 @@ Changelog for package theora_image_transport
 1.9.1 (2014-07-18)
 ------------------
 * Some cleanup in package.xml and CMakeLists.txt
-  - builds broke sporadically (I think because of the missing _gencpp in
+  - builds broke sporadically (I think because of the missing \*_gencpp in
   add_dependencies) with missing Packet.h file.
   - I’m no catkin expert, but these changes make catkin_lint happy (no
   more errors at least).

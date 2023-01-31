@@ -1,13 +1,13 @@
 /*********************************************************************
 * Software License Agreement (BSD License)
-*
+* 
 *  Copyright (c) 2012, Willow Garage, Inc.
 *  All rights reserved.
-*
+* 
 *  Redistribution and use in source and binary forms, with or without
 *  modification, are permitted provided that the following conditions
 *  are met:
-*
+* 
 *   * Redistributions of source code must retain the above copyright
 *     notice, this list of conditions and the following disclaimer.
 *   * Redistributions in binary form must reproduce the above
@@ -17,7 +17,7 @@
 *   * Neither the name of the Willow Garage nor the names of its
 *     contributors may be used to endorse or promote products derived
 *     from this software without specific prior written permission.
-*
+* 
 *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
 *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -32,13 +32,14 @@
 *  POSSIBILITY OF SUCH DAMAGE.
 *********************************************************************/
 
-#include <sensor_msgs/msg/image.hpp>
-#include <sensor_msgs/msg/compressed_image.hpp>
-#include <image_transport/simple_publisher_plugin.hpp>
+#include "image_transport/simple_publisher_plugin.h"
+#include <sensor_msgs/CompressedImage.h>
+#include <dynamic_reconfigure/server.h>
+#include <compressed_depth_image_transport/CompressedDepthPublisherConfig.h>
 
 namespace compressed_depth_image_transport {
 
-class CompressedDepthPublisher : public image_transport::SimplePublisherPlugin<sensor_msgs::msg::CompressedImage>
+class CompressedDepthPublisher : public image_transport::SimplePublisherPlugin<sensor_msgs::CompressedImage>
 {
 public:
   virtual ~CompressedDepthPublisher() {}
@@ -50,22 +51,20 @@ public:
 
 protected:
   // Overridden to set up reconfigure server
-  void advertiseImpl(
-          rclcpp::Node * node,
-          const std::string &base_topic,
-          rmw_qos_profile_t custom_qos,
-          rclcpp::PublisherOptions options) override final;
+  virtual void advertiseImpl(ros::NodeHandle &nh, const std::string &base_topic, uint32_t queue_size,
+                             const image_transport::SubscriberStatusCallback  &user_connect_cb,
+                             const image_transport::SubscriberStatusCallback  &user_disconnect_cb,
+                             const ros::VoidPtr &tracked_object, bool latch);
+  
+  virtual void publish(const sensor_msgs::Image& message,
+                       const PublishFn& publish_fn) const;
 
-  void publish(const sensor_msgs::msg::Image& message,
-                       const PublishFn& publish_fn) const override final;
-
-  struct Config {
-    int png_level;
-    double depth_max;
-    double depth_quantization;
-  };
-
+  typedef compressed_depth_image_transport::CompressedDepthPublisherConfig Config;
+  typedef dynamic_reconfigure::Server<Config> ReconfigureServer;
+  boost::shared_ptr<ReconfigureServer> reconfigure_server_;
   Config config_;
+
+  void configCb(Config& config, uint32_t level);
 };
 
 } //namespace compressed_depth_image_transport

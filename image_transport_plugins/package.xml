@@ -1,10 +1,6 @@
-<?xml version="1.0"?>
-<?xml-model href="http://download.ros.org/schem/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
-<package format="2">
-  <!-- TODO: Make this a metapackage, see
-       https://github.com/ros2/ros2/issues/408 -->
+<package>
   <name>image_transport_plugins</name>
-  <version>2.6.0</version>
+  <version>1.15.0</version>
     <description>
     A set of plugins for publishing and subscribing to sensor_msgs/Image topics
     in representations other than raw pixel data. For example, for viewing a
@@ -14,19 +10,20 @@
   </description>
   <author>Patrick Mihelich</author>
   <author>Julius Kammerl</author>
-  <maintainer email="michael@openrobotics.org">Michael Carroll</maintainer>
+  <author>David Gossow</author>
+  <maintainer email="kenjibrameld@gmail.com">Kenji Brameld</maintainer>
   <license>BSD</license>
 
   <url type="website">http://www.ros.org/wiki/image_transport_plugins</url>
 
-  <buildtool_depend>ament_cmake</buildtool_depend>
+  <buildtool_depend>catkin</buildtool_depend>
 
-  <exec_depend>compressed_depth_image_transport</exec_depend>
-  <exec_depend>compressed_image_transport</exec_depend>
-  <exec_depend>theora_image_transport</exec_depend>
+  <run_depend>compressed_depth_image_transport</run_depend>
+  <run_depend>compressed_image_transport</run_depend>
+  <run_depend>theora_image_transport</run_depend>
 
   <export>
-    <build_type>ament_cmake</build_type>
+    <metapackage/>
   </export>
 
 </package>

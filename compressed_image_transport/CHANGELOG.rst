@@ -2,46 +2,24 @@
 Changelog for package compressed_image_transport
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-2.6.0 (2022-08-16)
-------------------
-* Fix advertiseImpl() in compressed_publisher and subscribeImpl() in compressed_subscriber. (`#106 <https://github.com/ros-perception/image_transport_plugins/issues/106>`_)
-* Contributors: Ivan Santiago Paunovic
+1.15.0 (2023-01-30)
+-------------------
+* Update maintainer in ros1 branches (`#132 <https://github.com/ros-perception/image_transport_plugins/issues/132>`_)
+* Fix number of elements in vector parameter to call cv::imencode for OpenCV 4.7 (`#130 <https://github.com/ros-perception/image_transport_plugins/issues/130>`_)
+* Performance optimizations for JPEG decompression (`#60 <https://github.com/ros-perception/image_transport_plugins/issues/60>`_)
+* Fix copyright year 20012 -> 2012 (`#80 <https://github.com/ros-perception/image_transport_plugins/issues/80>`_)
+* Add a basic loopback unit test (`#61 <https://github.com/ros-perception/image_transport_plugins/issues/61>`_)
+* Contributors: Johannes Meyer, Kenji Brameld, Lucas Walter, Max Schwarz, Michael Carroll, ijnek, v4hn
 
-2.5.0 (2022-04-18)
-------------------
-
-2.3.2 (2022-02-18)
-------------------
-* Add tiff compression support. (`#75 <https://github.com/ros-perception/image_transport_plugins/issues/75>`_)
-* Fix copyright year 20012 -> 2012 (`#79 <https://github.com/ros-perception/image_transport_plugins/issues/79>`_)
-* JPEG only supports 8 bits images (`#73 <https://github.com/ros-perception/image_transport_plugins/issues/73>`_)
-* Contributors: Ivan Santiago Paunovic, Michael Carroll
-
-2.3.1 (2021-07-13)
-------------------
-* [ros2] Fix RCLCPP\_* logs, a string literal must be the first argument (`#72 <https://github.com/ros-perception/image_transport_plugins/issues/72>`_)
-* Contributors: Ivan Santiago Paunovic, Łukasz Mitka
-
-2.3.0 (2020-05-28)
-------------------
-* Use non-deprecated image_transport headers (`#59 <https://github.com/ros-perception/image_transport_plugins/issues/59>`_)
-* Add parameter declarations (`#52 <https://github.com/ros-perception/image_transport_plugins/issues/52>`_)
-* Contributors: Michael Carroll, Łukasz Mitka
-
-2.2.1 (2019-10-23)
-------------------
-
-2.2.0 (2019-09-27)
-------------------
-
-2.1.0 (2019-08-23)
-------------------
-
-2.0.0 (2018-12-13)
-------------------
-* Pointer api updates (`#31 <https://github.com/ros-perception/image_transport_plugins/issues/31>`_)
-* Update compressed_image_transport to ros2 (`#26 <https://github.com/ros-perception/image_transport_plugins/issues/26>`_)
-* Contributors: Michael Carroll, Jose Luis Rivero
+1.14.0 (2020-05-14)
+-------------------
+* Bump CMake version to avoid CMP0048 warning (`#53 <https://github.com/ros-perception/image_transport_plugins/issues/53>`_)
+* add params for jpeg compression `#35 <https://github.com/ros-perception/image_transport_plugins/issues/35>`_
+* fixed warning when resubscribing `#25 <https://github.com/ros-perception/image_transport_plugins/issues/25>`_
+* Fix binary install locations for Windows build `#34 <https://github.com/ros-perception/image_transport_plugins/issues/34>`_
+* Add legacy constants when using opencv4 `#32 <https://github.com/ros-perception/image_transport_plugins/issues/32>`_
+* fixed warning 'Tried to advertise a service that is already advertised in this node'
+* Contributors: Alejandro Hernández Cordero, David Gossow, Hans Gaiser, Sean Yen, Till Grenzdörffer, Yuki Furuta
 
 1.9.5 (2016-10-03)
 ------------------
@@ -49,7 +27,7 @@ Changelog for package compressed_image_transport
 1.9.4 (2016-10-02)
 ------------------
 * address gcc6 build error and tune
-  With gcc6, compiling fails with `stdlib.h: No such file or directory`,
+  With gcc6, compiling fails with 'stdlib.h: No such file or directory',
   as including '-isystem /usr/include' breaks with gcc6, cf.,
   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=70129.
   This commit addresses this issue for this package in the same way
