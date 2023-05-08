@@ -1,0 +1,12 @@
+Source: ros-iron-compressed-image-transport
+Section: misc
+Priority: optional
+Maintainer: Kenji Brameld <kenjibrameld@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), image-transport-tools, libcv-bridge-dev, libimage-transport-dev, python3-cv-bridge, ros-iron-ament-cmake, ros-iron-ros-workspace
+Homepage: http://www.ros.org/wiki/image_transport_plugins
+Standards-Version: 3.9.2
+
+Package: ros-iron-compressed-image-transport
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, image-transport-tools, libcv-bridge-dev, libimage-transport-dev, python3-cv-bridge, ros-iron-ros-workspace
+Description: Compressed_image_transport provides a plugin to image_transport for transparently sending images encoded as JPEG or PNG.
