@@ -2,6 +2,9 @@
 Changelog for package compressed_image_transport
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+4.0.0 (2024-04-13)
+------------------
+
 3.2.0 (2023-05-08)
 ------------------
 * Allow parameters to be reconfigurable (`#144 <https://github.com/ros-perception/image_transport_plugins/issues/144>`_)
