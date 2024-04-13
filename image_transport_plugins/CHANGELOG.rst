@@ -2,6 +2,11 @@
 Changelog for package image_transport_plugins
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+4.0.0 (2024-04-13)
+------------------
+* Added ZSTD plugin to metapackage (`#162 <https://github.com/ros-perception/image_transport_plugins/issues/162>`_)
+* Contributors: Alejandro Hernández Cordero, Kenji Brameld
+
 3.2.0 (2023-05-08)
 ------------------
 
