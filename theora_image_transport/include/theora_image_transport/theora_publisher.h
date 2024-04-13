@@ -32,11 +32,15 @@
 *  POSSIBILITY OF SUCH DAMAGE.
 *********************************************************************/
 
+#include "theora_image_transport/compression_common.h"
+
+#include <rclcpp/node.hpp>
+
 #include <sensor_msgs/msg/image.hpp>
 #include <sensor_msgs/msg/compressed_image.hpp>
 
 #include <image_transport/simple_publisher_plugin.hpp>
-#include <cv_bridge/cv_bridge.h>
+#include <cv_bridge/cv_bridge.hpp>
 #include <std_msgs/msg/header.hpp>
 #include <theora_image_transport/msg/packet.hpp>
 
@@ -44,23 +48,28 @@
 #include <theora/theoraenc.h>
 #include <theora/theoradec.h>
 
+#include <string>
+#include <vector>
+
 namespace theora_image_transport {
+
+using ParameterEvent = rcl_interfaces::msg::ParameterEvent;
 
 class TheoraPublisher : public image_transport::SimplePublisherPlugin<theora_image_transport::msg::Packet>
 {
 public:
   TheoraPublisher();
-  virtual ~TheoraPublisher();
+  ~TheoraPublisher() override;
 
   // Return the system unique string representing the theora transport type
-  virtual std::string getTransportName() const { return "theora"; }
+  std::string getTransportName() const override { return "theora"; }
 
 protected:
-  virtual void advertiseImpl(
+  void advertiseImpl(
     rclcpp::Node* node,
     const std::string &base_topic,
-    uint32_t queue_size,
-    rmw_qos_profile_t custom_qos);
+    rmw_qos_profile_t custom_qos,
+    rclcpp::PublisherOptions options) override;
 
   // TODO: Callback to send header packets to new clients
   // virtual void connectCallback(const ros::SingleSubscriberPublisher& pub);
@@ -68,6 +77,10 @@ protected:
   // Main publish function
   void publish(const sensor_msgs::msg::Image& message,
                const PublishFn& publish_fn) const;
+
+  // Runtime reconfiguration support
+  void refreshConfig() const;
+  mutable bool refreshConfigNeeded;
 
   // Utility functions
   bool ensureEncodingContext(const sensor_msgs::msg::Image& image, const PublishFn& publish_fn) const;
@@ -85,6 +98,18 @@ protected:
   mutable std::vector<theora_image_transport::msg::Packet> stream_header_;
 
   rclcpp::Logger logger_;
+  rclcpp::Node * node_;
+
+private:
+  std::vector<std::string> parameters_;
+  std::vector<std::string> deprecatedParameters_;
+
+  rclcpp::Subscription<ParameterEvent>::SharedPtr parameter_subscription_;
+
+  void declareParameter(const std::string &base_name,
+                        const ParameterDefinition &definition);
+
+  void onParameterEvent(ParameterEvent::SharedPtr event, std::string full_name, std::string base_name);
 };
 
 } //namespace compressed_image_transport
