@@ -35,9 +35,6 @@
 #ifndef COMPRESSED_IMAGE_TRANSPORT_COMPRESSION_COMMON
 #define COMPRESSED_IMAGE_TRANSPORT_COMPRESSION_COMMON
 
-#include <rclcpp/parameter_value.hpp>
-#include <rcl_interfaces/msg/parameter_descriptor.hpp>
-
 namespace compressed_image_transport
 {
 
@@ -48,15 +45,6 @@ enum compressionFormat
   JPEG = 0,
   PNG = 1,
   TIFF = 2,
-};
-
-using ParameterDescriptor = rcl_interfaces::msg::ParameterDescriptor;
-using ParameterValue = rclcpp::ParameterValue;
-
-struct ParameterDefinition
-{
-  const ParameterValue defaultValue;
-  const ParameterDescriptor descriptor;
 };
 
 } //namespace compressed_image_transport

@@ -32,26 +32,15 @@
 *  POSSIBILITY OF SUCH DAMAGE.
 *********************************************************************/
 
-#include "compressed_depth_image_transport/compression_common.h"
-
 #include <sensor_msgs/msg/image.hpp>
 #include <sensor_msgs/msg/compressed_image.hpp>
 #include <image_transport/simple_publisher_plugin.hpp>
 
-#include <rclcpp/node.hpp>
-
-#include <string>
-#include <vector>
-
 namespace compressed_depth_image_transport {
 
-using CompressedImage = sensor_msgs::msg::CompressedImage;
-using ParameterEvent = rcl_interfaces::msg::ParameterEvent;
-
-class CompressedDepthPublisher : public image_transport::SimplePublisherPlugin<CompressedImage>
+class CompressedDepthPublisher : public image_transport::SimplePublisherPlugin<sensor_msgs::msg::CompressedImage>
 {
 public:
-  CompressedDepthPublisher(): logger_(rclcpp::get_logger("CompressedDepthPublisher")) {}
   virtual ~CompressedDepthPublisher() {}
 
   virtual std::string getTransportName() const
@@ -61,27 +50,21 @@ public:
 
 protected:
   // Overridden to set up reconfigure server
-  void advertiseImpl(
+  virtual void advertiseImpl(
           rclcpp::Node * node,
           const std::string &base_topic,
-          rmw_qos_profile_t custom_qos,
-          rclcpp::PublisherOptions options) override final;
+          rmw_qos_profile_t custom_qos) override final;
 
-  void publish(const sensor_msgs::msg::Image& message,
-               const PublishFn& publish_fn) const override final;
+  virtual void publish(const sensor_msgs::msg::Image& message,
+                       const PublishFn& publish_fn) const override final;
 
-  rclcpp::Logger logger_;
-  rclcpp::Node * node_;
-private:
-  std::vector<std::string> parameters_;
-  std::vector<std::string> deprecatedParameters_;
+  struct Config {
+    int png_level;
+    double depth_max;
+    double depth_quantization;
+  };
 
-  rclcpp::Subscription<ParameterEvent>::SharedPtr parameter_subscription_;
-
-  void declareParameter(const std::string &base_name,
-                        const ParameterDefinition &definition);
-
-  void onParameterEvent(ParameterEvent::SharedPtr event, std::string full_name, std::string base_name);
+  Config config_;
 };
 
 } //namespace compressed_depth_image_transport
