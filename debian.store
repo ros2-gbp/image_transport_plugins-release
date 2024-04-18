@@ -1,1 +1,1 @@
-{"base": "756be20", "parent": "debian/rolling/zstd_image_transport", "previous": "a70980a", "trim": "", "trimbase": ""}
+{"base": "d6e8b4c", "parent": "debian/jazzy/zstd_image_transport", "previous": "d0ebda3", "trim": "", "trimbase": ""}
