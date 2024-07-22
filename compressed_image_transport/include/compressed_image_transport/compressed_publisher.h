@@ -33,7 +33,6 @@
 *********************************************************************/
 
 #include <string>
-#include <vector>
 
 #include <sensor_msgs/msg/image.hpp>
 #include <sensor_msgs/msg/compressed_image.hpp>
@@ -41,20 +40,17 @@
 
 #include <rclcpp/node.hpp>
 
-#include "compressed_image_transport/compression_common.h"
-
 namespace compressed_image_transport {
 
 using CompressedImage = sensor_msgs::msg::CompressedImage;
-using ParameterEvent = rcl_interfaces::msg::ParameterEvent;
 
 class CompressedPublisher : public image_transport::SimplePublisherPlugin<CompressedImage>
 {
 public:
   CompressedPublisher(): logger_(rclcpp::get_logger("CompressedPublisher")) {}
-  ~CompressedPublisher() override = default;
+  virtual ~CompressedPublisher() = default;
 
-  std::string getTransportName() const override
+  virtual std::string getTransportName() const
   {
     return "compressed";
   }
@@ -64,25 +60,32 @@ protected:
   void advertiseImpl(
       rclcpp::Node* node,
       const std::string& base_topic,
-      rmw_qos_profile_t custom_qos,
-      rclcpp::PublisherOptions options) override;
+      rmw_qos_profile_t custom_qos) override;
 
   void publish(const sensor_msgs::msg::Image& message,
-               const PublishFn& publish_fn) const override;
+               const PublishFn& publish_fn) const;
 
+  struct Config {
+    // Compression format to use "jpeg", "png" or "tiff".
+    std::string format;
+
+    // PNG Compression Level from 0 to 9.  A higher value means a smaller size.
+    // Default to OpenCV default of 3
+    int png_level;
+
+    // JPEG Quality from 0 to 100 (higher is better quality).
+    // Default to OpenCV default of 95.
+    int jpeg_quality;
+
+    // TIFF resolution unit
+    // Can be one of "none", "inch", "centimeter".
+    std::string tiff_res_unit;
+    int tiff_xdpi;
+    int tiff_ydpi;
+  };
+
+  Config config_;
   rclcpp::Logger logger_;
-  rclcpp::Node * node_;
-
-private:
-  std::vector<std::string> parameters_;
-  std::vector<std::string> deprecatedParameters_;
-
-  rclcpp::Subscription<ParameterEvent>::SharedPtr parameter_subscription_;
-
-  void declareParameter(const std::string &base_name,
-                        const ParameterDefinition &definition);
-
-  void onParameterEvent(ParameterEvent::SharedPtr event, std::string full_name, std::string base_name);
 };
 
 } //namespace compressed_image_transport

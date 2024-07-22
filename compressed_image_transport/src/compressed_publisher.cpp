@@ -34,7 +34,7 @@
 
 #include "compressed_image_transport/compressed_publisher.h"
 
-#include <cv_bridge/cv_bridge.hpp>
+#include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.hpp>
 #include <opencv2/imgcodecs.hpp>
 
@@ -42,10 +42,13 @@
 
 #include <rclcpp/exceptions/exceptions.hpp>
 #include <rclcpp/parameter_client.hpp>
-#include <rclcpp/parameter_events_filter.hpp>
 
 #include <sstream>
 #include <vector>
+
+constexpr const char* kDefaultFormat = "jpeg";
+constexpr int kDefaultPngLevel = 3;
+constexpr int kDefaultJpegQuality = 95;
 
 using namespace cv;
 using namespace std;
@@ -55,117 +58,111 @@ namespace enc = sensor_msgs::image_encodings;
 namespace compressed_image_transport
 {
 
-enum compressedParameters
-{
-  FORMAT = 0,
-  PNG_LEVEL,
-  JPEG_QUALITY,
-  TIFF_RESOLUTION_UNIT,
-  TIFF_XDPI,
-  TIFF_YDPI
-};
-
-const struct ParameterDefinition kParameters[] =
-{
-  { //FORMAT - Compression format to use "jpeg", "png" or "tiff".
-    ParameterValue("jpeg"),
-    ParameterDescriptor()
-      .set__name("format")
-      .set__type(rcl_interfaces::msg::ParameterType::PARAMETER_STRING)
-      .set__description("Compression method")
-      .set__read_only(false)
-      .set__additional_constraints("Supported values: [jpeg, png, tiff]")
-  },
-  { //PNG_LEVEL - PNG Compression Level from 0 to 9.  A higher value means a smaller size.
-    ParameterValue((int)3), //Default to OpenCV default of 3
-    ParameterDescriptor()
-      .set__name("png_level")
-      .set__type(rcl_interfaces::msg::ParameterType::PARAMETER_INTEGER)
-      .set__description("Compression level for PNG format")
-      .set__read_only(false)
-      .set__integer_range(
-        {rcl_interfaces::msg::IntegerRange()
-          .set__from_value(0)
-          .set__to_value(9)
-          .set__step(1)})
-  },
-  { //JPEG_QUALITY - JPEG Quality from 0 to 100 (higher is better quality).
-    ParameterValue((int)95), //Default to OpenCV default of 95.
-    ParameterDescriptor()
-      .set__name("jpeg_quality")
-      .set__type(rcl_interfaces::msg::ParameterType::PARAMETER_INTEGER)
-      .set__description("Image quality for JPEG format")
-      .set__read_only(false)
-      .set__integer_range(
-        {rcl_interfaces::msg::IntegerRange()
-          .set__from_value(1)
-          .set__to_value(100)
-          .set__step(1)})
-  },
-  { //TIFF_RESOLUTION_UNIT - TIFF resolution unit, can be one of "none", "inch", "centimeter".
-    ParameterValue("inch"),
-    ParameterDescriptor()
-      .set__name("tiff.res_unit")
-      .set__type(rcl_interfaces::msg::ParameterType::PARAMETER_STRING)
-      .set__description("tiff resolution unit")
-      .set__read_only(false)
-      .set__additional_constraints("Supported values: [none, inch, centimeter]")
-  },
-  { //TIFF_XDPI
-    ParameterValue((int)-1),
-    ParameterDescriptor()
-      .set__name("tiff.xdpi")
-      .set__type(rcl_interfaces::msg::ParameterType::PARAMETER_INTEGER)
-      .set__description("tiff xdpi")
-      .set__read_only(false)
-  },
-  { //TIFF_YDPI
-    ParameterValue((int)-1),
-    ParameterDescriptor()
-      .set__name("tiff.ydpi")
-      .set__type(rcl_interfaces::msg::ParameterType::PARAMETER_INTEGER)
-      .set__description("tiff ydpi")
-      .set__read_only(false)
-  }
-};
-
 void CompressedPublisher::advertiseImpl(
   rclcpp::Node* node,
   const std::string& base_topic,
-  rmw_qos_profile_t custom_qos,
-  rclcpp::PublisherOptions options)
+  rmw_qos_profile_t custom_qos)
 {
-  node_ = node;
   typedef image_transport::SimplePublisherPlugin<sensor_msgs::msg::CompressedImage> Base;
-  Base::advertiseImpl(node, base_topic, custom_qos, options);
+  Base::advertiseImpl(node, base_topic, custom_qos);
 
-  // Declare Parameters
   uint ns_len = node->get_effective_namespace().length();
   std::string param_base_name = base_topic.substr(ns_len);
   std::replace(param_base_name.begin(), param_base_name.end(), '/', '.');
+  std::string format_param_name = param_base_name + ".format";
+  rcl_interfaces::msg::ParameterDescriptor format_description;
+  format_description.name = "format";
+  format_description.type = rcl_interfaces::msg::ParameterType::PARAMETER_STRING;
+  format_description.description = "Compression method";
+  format_description.read_only = false;
+  format_description.additional_constraints = "Supported values: [jpeg, png, tiff]";
+  try {
+    config_.format = node->declare_parameter(format_param_name, kDefaultFormat, format_description);
+  } catch (const rclcpp::exceptions::ParameterAlreadyDeclaredException &) {
+    RCLCPP_DEBUG(logger_, "%s was previously declared", format_param_name.c_str());
+    config_.format = node->get_parameter(format_param_name).get_value<std::string>();
+  }
 
-  using callbackT = std::function<void(ParameterEvent::SharedPtr event)>;
-  auto callback = std::bind(&CompressedPublisher::onParameterEvent, this, std::placeholders::_1,
-                            node->get_fully_qualified_name(), param_base_name);
+  std::string png_level_param_name = param_base_name + ".png_level";
+  rcl_interfaces::msg::ParameterDescriptor png_level_description;
+  png_level_description.name = "png_level";
+  png_level_description.type = rcl_interfaces::msg::ParameterType::PARAMETER_INTEGER;
+  png_level_description.description = "Compression level for PNG format";
+  png_level_description.read_only = false;
+  rcl_interfaces::msg::IntegerRange png_range;
+  png_range.from_value = 0;
+  png_range.to_value = 9;
+  png_range.step = 1;
+  png_level_description.integer_range.push_back(png_range);
+  try {
+    config_.png_level = node->declare_parameter(
+      png_level_param_name, kDefaultPngLevel, png_level_description);
+  } catch (const rclcpp::exceptions::ParameterAlreadyDeclaredException &) {
+    RCLCPP_DEBUG(logger_, "%s was previously declared", png_level_param_name.c_str());
+    config_.png_level = node->get_parameter(png_level_param_name).get_value<int64_t>();
+  }
 
-  parameter_subscription_ = rclcpp::SyncParametersClient::on_parameter_event<callbackT>(node, callback);
+  std::string jpeg_quality_param_name = param_base_name + ".jpeg_quality";
+  rcl_interfaces::msg::ParameterDescriptor jpeg_quality_description;
+  jpeg_quality_description.name = "jpeg_quality";
+  jpeg_quality_description.type = rcl_interfaces::msg::ParameterType::PARAMETER_INTEGER;
+  jpeg_quality_description.description = "Image quality for JPEG format";
+  jpeg_quality_description.read_only = false;
+  rcl_interfaces::msg::IntegerRange jpeg_range;
+  jpeg_range.from_value = 1;
+  jpeg_range.to_value = 100;
+  jpeg_range.step = 1;
+  jpeg_quality_description.integer_range.push_back(jpeg_range);
+  try {
+    config_.jpeg_quality = node->declare_parameter(
+      jpeg_quality_param_name, kDefaultJpegQuality, jpeg_quality_description);
+  } catch (const rclcpp::exceptions::ParameterAlreadyDeclaredException &) {
+    RCLCPP_DEBUG(logger_, "%s was previously declared", jpeg_quality_param_name.c_str());
+    config_.jpeg_quality = node->get_parameter(jpeg_quality_param_name).get_value<int64_t>();
+  }
 
-  for(const ParameterDefinition &pd : kParameters)
-    declareParameter(param_base_name, pd);
+  std::string tiff_res_unit_param_name = param_base_name + ".tiff.res_unit";
+  rcl_interfaces::msg::ParameterDescriptor tiff_res_unit_description;
+  tiff_res_unit_description.description = "tiff resolution unit";
+  tiff_res_unit_description.read_only = false;
+  tiff_res_unit_description.additional_constraints = "Supported values: [none, inch, centimeter]";
+  try {
+    config_.tiff_res_unit = node->declare_parameter(
+      tiff_res_unit_param_name, "inch", tiff_res_unit_description);
+  } catch (const rclcpp::exceptions::ParameterAlreadyDeclaredException &) {
+    RCLCPP_DEBUG(logger_, "%s was previously declared", tiff_res_unit_param_name.c_str());
+    config_.tiff_res_unit = node->get_parameter(tiff_res_unit_param_name).get_value<std::string>();
+  }
+
+  std::string tiff_xdpi_param_name = param_base_name + ".tiff.xdpi";
+  rcl_interfaces::msg::ParameterDescriptor tiff_xdpi_description;
+  tiff_xdpi_description.description = "tiff xdpi";
+  tiff_xdpi_description.read_only = false;
+  try {
+    config_.tiff_xdpi = node->declare_parameter(
+      tiff_xdpi_param_name, -1, tiff_xdpi_description);
+  } catch (const rclcpp::exceptions::ParameterAlreadyDeclaredException &) {
+    RCLCPP_DEBUG(logger_, "%s was previously declared", tiff_xdpi_param_name.c_str());
+    config_.tiff_xdpi = node->get_parameter(tiff_xdpi_param_name).get_value<int64_t>();
+  }
+
+  std::string tiff_ydpi_param_name = param_base_name + ".tiff.ydpi";
+  rcl_interfaces::msg::ParameterDescriptor tiff_ydpi_description;
+  tiff_ydpi_description.description = "tiff ydpi";
+  tiff_ydpi_description.read_only = false;
+  try {
+    config_.tiff_ydpi = node->declare_parameter(
+      tiff_ydpi_param_name, -1, tiff_ydpi_description);
+  } catch (const rclcpp::exceptions::ParameterAlreadyDeclaredException &) {
+    RCLCPP_DEBUG(logger_, "%s was previously declared", tiff_ydpi_param_name.c_str());
+    config_.tiff_ydpi = node->get_parameter(tiff_xdpi_param_name).get_value<int64_t>();
+  }
 }
 
 void CompressedPublisher::publish(
   const sensor_msgs::msg::Image& message,
   const PublishFn& publish_fn) const
 {
-  // Fresh Configuration
-  std::string cfg_format = node_->get_parameter(parameters_[FORMAT]).get_value<std::string>();
-  int cfg_png_level = node_->get_parameter(parameters_[PNG_LEVEL]).get_value<int64_t>();
-  int cfg_jpeg_quality = node_->get_parameter(parameters_[JPEG_QUALITY]).get_value<int64_t>();;
-  std::string cfg_tiff_res_unit = node_->get_parameter(parameters_[TIFF_RESOLUTION_UNIT]).get_value<std::string>();
-  int cfg_tiff_xdpi = node_->get_parameter(parameters_[TIFF_XDPI]).get_value<int64_t>();
-  int cfg_tiff_ydpi = node_->get_parameter(parameters_[TIFF_YDPI]).get_value<int64_t>();
-
   // Compressed image message
   sensor_msgs::msg::CompressedImage compressed;
   compressed.header = message.header;
@@ -176,11 +173,11 @@ void CompressedPublisher::publish(
 
   // Get codec configuration
   compressionFormat encodingFormat = UNDEFINED;
-  if (cfg_format == "jpeg") {
+  if (config_.format == "jpeg") {
     encodingFormat = JPEG;
-  } else if (cfg_format == "png") {
+  } else if (config_.format == "png") {
     encodingFormat = PNG;
-  } else if (cfg_format == "tiff") {
+  } else if (config_.format == "tiff") {
     encodingFormat = TIFF;
   }
 
@@ -194,7 +191,7 @@ void CompressedPublisher::publish(
     {
       params.reserve(2);
       params.emplace_back(cv::IMWRITE_JPEG_QUALITY);
-      params.emplace_back(cfg_jpeg_quality);
+      params.emplace_back(config_.jpeg_quality);
 
       // Update ros message format header
       compressed.format += "; jpeg compressed ";
@@ -255,7 +252,7 @@ void CompressedPublisher::publish(
     {
       params.reserve(2);
       params.emplace_back(cv::IMWRITE_PNG_COMPRESSION);
-      params.emplace_back(cfg_png_level);
+      params.emplace_back(config_.png_level);
 
       // Update ros message format header
       compressed.format += "; png compressed ";
@@ -318,23 +315,23 @@ void CompressedPublisher::publish(
       compressed.format += "; tiff compressed ";
       int res_unit = -1;
       // See https://gitlab.com/libtiff/libtiff/-/blob/v4.3.0/libtiff/tiff.h#L282-284
-      if (cfg_tiff_res_unit == "inch") {
+      if (config_.tiff_res_unit == "inch") {
         res_unit = 2;
-      } else if (cfg_tiff_res_unit == "centimeter") {
+      } else if (config_.tiff_res_unit == "centimeter") {
         res_unit = 3;
-      } else if (cfg_tiff_res_unit == "none") {
+      } else if (config_.tiff_res_unit == "none") {
         res_unit = 1;
       } else {
         RCLCPP_WARN(
           logger_,
           "tiff.res_unit parameter should be either 'inch', 'centimeter' or 'none'; "
-          "defaulting to 'inch'. Found '%s'", cfg_tiff_res_unit.c_str());
+          "defaulting to 'inch'. Found '%s'", config_.tiff_res_unit.c_str());
       }
       params.reserve(3);
       params.emplace_back(cv::IMWRITE_TIFF_XDPI);
-      params.emplace_back(cfg_tiff_xdpi);
+      params.emplace_back(config_.tiff_xdpi);
       params.emplace_back(cv::IMWRITE_TIFF_YDPI);
-      params.emplace_back(cfg_tiff_ydpi);
+      params.emplace_back(config_.tiff_ydpi);
       params.emplace_back(cv::IMWRITE_TIFF_RESUNIT);
       params.emplace_back(res_unit);
 
@@ -380,74 +377,8 @@ void CompressedPublisher::publish(
     }
 
     default:
-      RCUTILS_LOG_ERROR("Unknown compression type '%s', valid options are 'jpeg', 'png' and 'tiff'", cfg_format.c_str());
+      RCUTILS_LOG_ERROR("Unknown compression type '%s', valid options are 'jpeg', 'png' and 'tiff'", config_.format.c_str());
       break;
   }
 }
-
-void CompressedPublisher::declareParameter(const std::string &base_name,
-                                           const ParameterDefinition &definition)
-{
-  //transport scoped parameter (e.g. image_raw.compressed.format)
-  const std::string transport_name = getTransportName();
-  const std::string param_name = base_name + "." + transport_name + "." + definition.descriptor.name;
-  parameters_.push_back(param_name);
-
-  //deprecated non-scoped parameter name (e.g. image_raw.format)
-  const std::string deprecated_name = base_name + "." + definition.descriptor.name;
-  deprecatedParameters_.push_back(deprecated_name);
-
-  rclcpp::ParameterValue param_value;
-
-  try {
-    param_value = node_->declare_parameter(param_name, definition.defaultValue, definition.descriptor);
-  } catch (const rclcpp::exceptions::ParameterAlreadyDeclaredException &) {
-    RCLCPP_DEBUG(logger_, "%s was previously declared", definition.descriptor.name.c_str());
-    param_value = node_->get_parameter(param_name).get_parameter_value();
-  }
-
-  // transport scoped parameter as default, otherwise we would overwrite
-  try {
-    node_->declare_parameter(deprecated_name, param_value, definition.descriptor);
-  } catch (const rclcpp::exceptions::ParameterAlreadyDeclaredException &) {
-    RCLCPP_DEBUG(logger_, "%s was previously declared", definition.descriptor.name.c_str());
-  }
-}
-
-void CompressedPublisher::onParameterEvent(ParameterEvent::SharedPtr event, std::string full_name, std::string base_name)
-{
-  // filter out events from other nodes
-  if (event->node != full_name)
-    return;
-
-  // filter out new/changed deprecated parameters
-  using EventType = rclcpp::ParameterEventsFilter::EventType;
-
-  rclcpp::ParameterEventsFilter filter(event, deprecatedParameters_, {EventType::NEW, EventType::CHANGED});
-
-  const std::string transport = getTransportName();
-
-  // emit warnings for deprecated parameters & sync deprecated parameter value to correct
-  for (auto & it : filter.get_events())
-  {
-    const std::string name = it.second->name;
-
-    size_t baseNameIndex = name.find(base_name); //name was generated from base_name, has to succeed
-    size_t paramNameIndex = baseNameIndex + base_name.size();
-    //e.g. `color.image_raw.` + `compressed` + `format`
-    std::string recommendedName = name.substr(0, paramNameIndex + 1) + transport + name.substr(paramNameIndex);
-
-    rclcpp::Parameter recommendedValue = node_->get_parameter(recommendedName);
-
-    // do not emit warnings if deprecated value matches
-    if(it.second->value == recommendedValue.get_value_message())
-      continue;
-
-    RCLCPP_WARN_STREAM(logger_, "parameter `" << name << "` is deprecated and ambiguous" <<
-                                "; use transport qualified name `" << recommendedName << "`");
-
-    node_->set_parameter(rclcpp::Parameter(recommendedName, it.second->value));
-  }
-}
-
 } //namespace compressed_image_transport

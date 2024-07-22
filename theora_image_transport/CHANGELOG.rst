@@ -2,30 +2,13 @@
 Changelog for package theora_image_transport
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-4.0.0 (2024-04-13)
+2.5.2 (2024-07-22)
 ------------------
 
-3.2.0 (2023-05-08)
+2.5.1 (2024-04-13)
 ------------------
-* Deprecated the following parameter names in favor of transport scoped ones. The remapping is listed below:
-  * `image.optimize_for` to `image.theora.optimize_for`
-  * `image.target_bitrate` to `image.theora.target_bitrate`
-  * `image.quality` to `image.theora.quality`
-  * `image.keyframe_frequency` to `image.theora.keyframe_frequency`
-  The deprecated parameters emit a warning if explicitly set, but this warning will be removed in future distros.
-  (`#146 <https://github.com/ros-perception/image_transport_plugins/issues/146>`_)
-* Contributors: Bartosz Meglicki, Kenji Brameld
-
-3.0.0 (2023-04-18)
-------------------
-* Replace deprecated cv_bridge.h with cv_bridge.hpp (`#118 <https://github.com/ros-perception/image_transport_plugins/issues/118>`_)
 * Update maintainer (`#112 <https://github.com/ros-perception/image_transport_plugins/issues/112>`_)
-* Contributors: Kenji Brameld, Michael Carroll
-
-2.6.0 (2022-08-16)
-------------------
-* Fix advertiseImpl() in theora_publisher and subscribeImpl() in theora_subscriber. (`#106 <https://github.com/ros-perception/image_transport_plugins/issues/106>`_)
-* Contributors: Ivan Santiago Paunovic
+* Contributors: Kenji Brameld
 
 2.5.0 (2022-04-18)
 ------------------
