@@ -1,13 +1,13 @@
 /*********************************************************************
 * Software License Agreement (BSD License)
-*
+* 
 *  Copyright (c) 2012, Willow Garage, Inc.
 *  All rights reserved.
-*
+* 
 *  Redistribution and use in source and binary forms, with or without
 *  modification, are permitted provided that the following conditions
 *  are met:
-*
+* 
 *   * Redistributions of source code must retain the above copyright
 *     notice, this list of conditions and the following disclaimer.
 *   * Redistributions in binary form must reproduce the above
@@ -17,7 +17,7 @@
 *   * Neither the name of the Willow Garage nor the names of its
 *     contributors may be used to endorse or promote products derived
 *     from this software without specific prior written permission.
-*
+* 
 *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
 *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -32,57 +32,24 @@
 *  POSSIBILITY OF SUCH DAMAGE.
 *********************************************************************/
 
-#include <string>
-#include <vector>
+#ifndef THEORA_IMAGE_TRANSPORT_COMPRESSION_COMMON
+#define THEORA_IMAGE_TRANSPORT_COMPRESSION_COMMON
 
-#include <sensor_msgs/msg/image.hpp>
-#include <sensor_msgs/msg/compressed_image.hpp>
-#include <image_transport/simple_publisher_plugin.hpp>
+#include <rclcpp/parameter_value.hpp>
+#include <rcl_interfaces/msg/parameter_descriptor.hpp>
 
-#include <rclcpp/node.hpp>
-
-#include "compressed_image_transport/compression_common.h"
-
-namespace compressed_image_transport {
-
-using CompressedImage = sensor_msgs::msg::CompressedImage;
-using ParameterEvent = rcl_interfaces::msg::ParameterEvent;
-
-class CompressedPublisher : public image_transport::SimplePublisherPlugin<CompressedImage>
+namespace theora_image_transport
 {
-public:
-  CompressedPublisher(): logger_(rclcpp::get_logger("CompressedPublisher")) {}
-  ~CompressedPublisher() override = default;
 
-  std::string getTransportName() const override
-  {
-    return "compressed";
-  }
+using ParameterDescriptor = rcl_interfaces::msg::ParameterDescriptor;
+using ParameterValue = rclcpp::ParameterValue;
 
-protected:
-  // Overridden to set up reconfigure server
-  void advertiseImpl(
-      rclcpp::Node* node,
-      const std::string& base_topic,
-      rmw_qos_profile_t custom_qos,
-      rclcpp::PublisherOptions options) override;
-
-  void publish(const sensor_msgs::msg::Image& message,
-               const PublishFn& publish_fn) const override;
-
-  rclcpp::Logger logger_;
-  rclcpp::Node * node_;
-
-private:
-  std::vector<std::string> parameters_;
-  std::vector<std::string> deprecatedParameters_;
-
-  rclcpp::Subscription<ParameterEvent>::SharedPtr parameter_subscription_;
-
-  void declareParameter(const std::string &base_name,
-                        const ParameterDefinition &definition);
-
-  void onParameterEvent(ParameterEvent::SharedPtr event, std::string full_name, std::string base_name);
+struct ParameterDefinition
+{
+  const ParameterValue defaultValue;
+  const ParameterDescriptor descriptor;
 };
 
-} //namespace compressed_image_transport
+} //namespace theora_image_transport
+
+#endif
