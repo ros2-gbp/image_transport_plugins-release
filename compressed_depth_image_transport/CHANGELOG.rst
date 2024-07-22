@@ -2,6 +2,11 @@
 Changelog for package compressed_depth_image_transport
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+4.0.1 (2024-07-22)
+------------------
+* Removed warning (`#164 <https://github.com/ros-perception/image_transport_plugins/issues/164>`_)
+* Contributors: Alejandro Hernández Cordero
+
 4.0.0 (2024-04-13)
 ------------------
 * Added RVL Codec support to compressed_depth_image_transport (`#159 <https://github.com/ros-perception/image_transport_plugins/issues/159>`_)
