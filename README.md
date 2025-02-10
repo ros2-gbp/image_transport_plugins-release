@@ -1,3 +1,30 @@
+## image_transport_plugins (humble) - 2.5.3-1
+
+The packages in the `image_transport_plugins` repository were released into the `humble` distro by running `/usr/bin/bloom-release --rosdistro humble --track humble image_transport_plugins` on `Mon, 10 Feb 2025 19:08:07 -0000`
+
+These packages were released:
+- `compressed_depth_image_transport`
+- `compressed_image_transport`
+- `image_transport_plugins`
+- `theora_image_transport`
+
+Version of package(s) in repository `image_transport_plugins`:
+
+- upstream repository: https://github.com/ros-perception/image_transport_plugins.git
+- release repository: https://github.com/ros2-gbp/image_transport_plugins-release.git
+- rosdistro version: `2.5.2-1`
+- old version: `2.5.2-2`
+- new version: `2.5.3-1`
+
+Versions of tools used:
+
+- bloom version: `0.12.0`
+- catkin_pkg version: `1.0.0`
+- rosdep version: `0.25.1`
+- rosdistro version: `1.0.1`
+- vcstools version: `0.1.42`
+
+
 ## image_transport_plugins (humble) - 2.5.2-2
 
 The packages in the `image_transport_plugins` repository were released into the `humble` distro by running `/usr/bin/bloom-release --rosdistro humble --track humble image_transport_plugins` on `Mon, 10 Feb 2025 19:05:41 -0000`
