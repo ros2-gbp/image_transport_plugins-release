@@ -2,10 +2,15 @@
 Changelog for package zstd_image_transport
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-4.0.3 (2024-11-25)
+5.0.2 (2025-02-10)
+------------------
+* Use standard C++ type unsigned int in place of uint (`#174 <https://github.com/ros-perception/image_transport_plugins/issues/174>`_)
+* Contributors: Silvio Traversaro
+
+5.0.1 (2024-11-25)
 ------------------
 
-4.0.2 (2024-07-31)
+5.0.0 (2024-07-31)
 ------------------
 
 4.0.1 (2024-07-22)
