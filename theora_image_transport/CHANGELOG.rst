@@ -2,21 +2,18 @@
 Changelog for package theora_image_transport
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-5.1.0 (2025-07-09)
+4.0.5 (2025-07-09)
 ------------------
-* Use non deprecated method (`#182 <https://github.com/ros-perception/image_transport_plugins/issues/182>`_) (`#197 <https://github.com/ros-perception/image_transport_plugins/issues/197>`_)
+* Use non deprecated method (`#182 <https://github.com/ros-perception/image_transport_plugins/issues/182>`_) (`#194 <https://github.com/ros-perception/image_transport_plugins/issues/194>`_)
 * Contributors: mergify[bot]
 
-5.0.3 (2025-05-21)
+4.0.4 (2025-02-10)
 ------------------
 
-5.0.2 (2025-02-10)
+4.0.3 (2024-11-25)
 ------------------
 
-5.0.1 (2024-11-25)
-------------------
-
-5.0.0 (2024-07-31)
+4.0.2 (2024-07-31)
 ------------------
 * Added common linters to theora_image_transport (`#169 <https://github.com/ros-perception/image_transport_plugins/issues/169>`_)
 * Contributors: Alejandro Hernández Cordero
