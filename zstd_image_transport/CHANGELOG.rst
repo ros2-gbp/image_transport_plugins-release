@@ -2,23 +2,37 @@
 Changelog for package zstd_image_transport
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-4.0.5 (2025-07-09)
+6.1.0 (2025-07-15)
 ------------------
-* Use non deprecated method (`#182 <https://github.com/ros-perception/image_transport_plugins/issues/182>`_) (`#194 <https://github.com/ros-perception/image_transport_plugins/issues/194>`_)
-* Adding the include of cstdint (`#189 <https://github.com/ros-perception/image_transport_plugins/issues/189>`_) (`#190 <https://github.com/ros-perception/image_transport_plugins/issues/190>`_)
-* Contributors: mergify[bot]
+* Replace rmw_qos_profile_t with rclcpp::QoS (`#193 <https://github.com/ros-perception/image_transport_plugins/issues/193>`_)
+* Contributors: Alejandro Hernández Cordero
 
-4.0.4 (2025-02-10)
+6.0.0 (2025-07-09)
 ------------------
-* Use standard C++ type unsigned int in place of uint (`#174 <https://github.com/ros-perception/image_transport_plugins/issues/174>`_) (`#175 <https://github.com/ros-perception/image_transport_plugins/issues/175>`_)
-  (cherry picked from commit 0352721b71ca24d6bc085c1b45bca3636620bab3)
-  Co-authored-by: Silvio Traversaro <silvio@traversaro.it>
-* Contributors: mergify[bot]
+* Use non deprecated method (`#182 <https://github.com/ros-perception/image_transport_plugins/issues/182>`_)
+* Merge pull request `#188 <https://github.com/ros-perception/image_transport_plugins/issues/188>`_ from bjsowa/fix/canonical-param-names
+* Add TODO comments about deprecated parameters
+* Simplify pre set parameter callback for other transports
+* Adding the include of cstdint (`#189 <https://github.com/ros-perception/image_transport_plugins/issues/189>`_)
+* Don't add pre set parameter callback when not needed
+* Add deprecated dot parameters for zstd transport
+* Fix inconsistent transport param names
+* Contributors: Alejandro Hernández Cordero, Błażej Sowa, Jan Vermaete, Kenji Brameld
 
-4.0.3 (2024-11-25)
+5.0.3 (2025-05-21)
+------------------
+* Use target_link_libraries instead of ament_target_dependencies (`#179 <https://github.com/ros-perception/image_transport_plugins/issues/179>`_)
+* Contributors: Alejandro Hernández Cordero
+
+5.0.2 (2025-02-10)
+------------------
+* Use standard C++ type unsigned int in place of uint (`#174 <https://github.com/ros-perception/image_transport_plugins/issues/174>`_)
+* Contributors: Silvio Traversaro
+
+5.0.1 (2024-11-25)
 ------------------
 
-4.0.2 (2024-07-31)
+5.0.0 (2024-07-31)
 ------------------
 
 4.0.1 (2024-07-22)

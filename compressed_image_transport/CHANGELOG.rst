@@ -2,22 +2,40 @@
 Changelog for package compressed_image_transport
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-4.0.5 (2025-07-09)
+6.1.0 (2025-07-15)
 ------------------
-* Use non deprecated method (`#182 <https://github.com/ros-perception/image_transport_plugins/issues/182>`_) (`#194 <https://github.com/ros-perception/image_transport_plugins/issues/194>`_)
-* Contributors: mergify[bot]
+* Replace rmw_qos_profile_t with rclcpp::QoS (`#193 <https://github.com/ros-perception/image_transport_plugins/issues/193>`_)
+* Contributors: Alejandro Hernández Cordero
 
-4.0.4 (2025-02-10)
+6.0.0 (2025-07-09)
 ------------------
+* Use non deprecated method (`#182 <https://github.com/ros-perception/image_transport_plugins/issues/182>`_)
+* Merge pull request `#188 <https://github.com/ros-perception/image_transport_plugins/issues/188>`_ from bjsowa/fix/canonical-param-names
+* Add TODO comments about deprecated parameters
+* Simplify pre set parameter callback for other transports
+* Don't add pre set parameter callback when not needed
+* Add deprecated dot parameters for compressed transport
+* Fix inconsistent transport param names
+* Removed deprecated params (`#183 <https://github.com/ros-perception/image_transport_plugins/issues/183>`_)
+* Removed deprecated headers (`#184 <https://github.com/ros-perception/image_transport_plugins/issues/184>`_)
+* Contributors: Alejandro Hernández Cordero, Błażej Sowa, Kenji Brameld
 
-4.0.3 (2024-11-25)
+5.0.3 (2025-05-21)
 ------------------
-* inlcude alpha channel in PNG compression (`#171 <https://github.com/ros-perception/image_transport_plugins/issues/171>`_) (`#173 <https://github.com/ros-perception/image_transport_plugins/issues/173>`_)
-  (cherry picked from commit 9695d1b2a88e3dcae8ab2f28e1078e68a7893af5)
-  Co-authored-by: Aleksander Szymański <bitterisland6@gmail.com>
-* Contributors: mergify[bot]
+* Use target_link_libraries instead of ament_target_dependencies (`#179 <https://github.com/ros-perception/image_transport_plugins/issues/179>`_)
+* Contributors: Alejandro Hernández Cordero
 
-4.0.2 (2024-07-31)
+5.0.2 (2025-02-10)
+------------------
+* [ADD] flag for jpeg compression of bayer format (`#98 <https://github.com/ros-perception/image_transport_plugins/issues/98>`_)
+* Contributors: wodtko
+
+5.0.1 (2024-11-25)
+------------------
+* inlcude alpha channel in PNG compression (`#171 <https://github.com/ros-perception/image_transport_plugins/issues/171>`_)
+* Contributors: Aleksander Szymański
+
+5.0.0 (2024-07-31)
 ------------------
 * Added common linters to compressed_image_transport (`#167 <https://github.com/ros-perception/image_transport_plugins/issues/167>`_)
 * Contributors: Alejandro Hernández Cordero

@@ -2,18 +2,35 @@
 Changelog for package theora_image_transport
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-4.0.5 (2025-07-09)
+6.1.0 (2025-07-15)
 ------------------
-* Use non deprecated method (`#182 <https://github.com/ros-perception/image_transport_plugins/issues/182>`_) (`#194 <https://github.com/ros-perception/image_transport_plugins/issues/194>`_)
-* Contributors: mergify[bot]
+* Replace rmw_qos_profile_t with rclcpp::QoS (`#193 <https://github.com/ros-perception/image_transport_plugins/issues/193>`_)
+* Contributors: Alejandro Hernández Cordero
 
-4.0.4 (2025-02-10)
+6.0.0 (2025-07-09)
+------------------
+* Use non deprecated method (`#182 <https://github.com/ros-perception/image_transport_plugins/issues/182>`_)
+* Merge pull request `#188 <https://github.com/ros-perception/image_transport_plugins/issues/188>`_ from bjsowa/fix/canonical-param-names
+* Add TODO comments about deprecated parameters
+* Simplify pre set parameter callback for other transports
+* Don't add pre set parameter callback when not needed
+* Use post set parameter callback instead of parameter events
+* Add deprecated dot parameters for theora transport
+* Fix inconsistent transport param names
+* Removed deprecated params (`#183 <https://github.com/ros-perception/image_transport_plugins/issues/183>`_)
+* Removed deprecated headers (`#184 <https://github.com/ros-perception/image_transport_plugins/issues/184>`_)
+* Contributors: Alejandro Hernández Cordero, Błażej Sowa, Kenji Brameld
+
+5.0.3 (2025-05-21)
 ------------------
 
-4.0.3 (2024-11-25)
+5.0.2 (2025-02-10)
 ------------------
 
-4.0.2 (2024-07-31)
+5.0.1 (2024-11-25)
+------------------
+
+5.0.0 (2024-07-31)
 ------------------
 * Added common linters to theora_image_transport (`#169 <https://github.com/ros-perception/image_transport_plugins/issues/169>`_)
 * Contributors: Alejandro Hernández Cordero
