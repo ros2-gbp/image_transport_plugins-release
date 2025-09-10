@@ -39,7 +39,6 @@
 
 #include <rclcpp/node.hpp>
 
-#include <image_transport/node_interfaces.hpp>
 #include <image_transport/simple_subscriber_plugin.hpp>
 #include <theora_image_transport/msg/packet.hpp>
 
@@ -60,11 +59,12 @@ public:
   std::string getTransportName() const override {return "theora";}
 
 protected:
+  // Overridden to bump queue_size, otherwise we might lose headers
   void subscribeImpl(
-    image_transport::RequiredInterfaces node_interfaces,
+    rclcpp::Node * node,
     const std::string & base_topic,
     const Callback & callback,
-    rclcpp::QoS custom_qos,
+    rmw_qos_profile_t custom_qos,
     rclcpp::SubscriptionOptions options) override;
 
   // The function that does the actual decompression and calls a user supplied
@@ -91,14 +91,21 @@ protected:
   sensor_msgs::msg::Image::SharedPtr latest_image_;
 
   rclcpp::Logger logger_;
-  rclcpp::node_interfaces::NodeParametersInterface::SharedPtr node_param_interface_;
+  rclcpp::Node * node_;
 
 private:
   std::vector<std::string> parameters_;
+  std::vector<std::string> deprecatedParameters_;
+
+  rclcpp::Subscription<ParameterEvent>::SharedPtr parameter_subscription_;
 
   void declareParameter(
     const std::string & base_name,
     const ParameterDefinition & definition);
+
+  void onParameterEvent(
+    ParameterEvent::SharedPtr event, std::string full_name,
+    std::string base_name);
 };
 
 }  // namespace theora_image_transport

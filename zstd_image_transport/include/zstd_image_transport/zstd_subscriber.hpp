@@ -42,7 +42,6 @@
 
 #include <sensor_msgs/msg/image.hpp>
 #include <sensor_msgs/msg/compressed_image.hpp>
-#include <image_transport/node_interfaces.hpp>
 #include <image_transport/simple_subscriber_plugin.hpp>
 
 #include "zstd_image_transport/zstd_common.hpp"
@@ -63,10 +62,10 @@ public:
 
 protected:
   void subscribeImpl(
-    image_transport::RequiredInterfaces node_interfaces,
+    rclcpp::Node *,
     const std::string & base_topic,
     const Callback & callback,
-    rclcpp::QoS custom_qos,
+    rmw_qos_profile_t custom_qos,
     rclcpp::SubscriptionOptions options) override;
 
   void internalCallback(
@@ -74,6 +73,7 @@ protected:
     const Callback & user_cb) override;
 
   rclcpp::Logger logger_;
+  rclcpp::Node * node_;
 };
 
 }  // namespace zstd_image_transport

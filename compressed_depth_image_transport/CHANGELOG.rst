@@ -2,34 +2,17 @@
 Changelog for package compressed_depth_image_transport
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-6.2.1 (2025-09-10)
+5.1.1 (2025-09-10)
 ------------------
-* Fix passing parameters to cv::imencode for OpenCV 4.7 (`#207 <https://github.com/ros-perception/image_transport_plugins/issues/207>`_)
-* Contributors: Jafar Uruç
+* Fix passing parameters to cv::imencode for OpenCV 4.7 (`#207 <https://github.com/ros-perception/image_transport_plugins/issues/207>`_) (`#208 <https://github.com/ros-perception/image_transport_plugins/issues/208>`_)
+  (cherry picked from commit 3d192bff0b770cd9b0a202fd4c858254c1cc726f)
+  Co-authored-by: Jafar Uruç <jafar.uruc@gmail.com>
+* Contributors: mergify[bot]
 
-6.2.0 (2025-08-22)
+5.1.0 (2025-07-09)
 ------------------
-* Support lifecycle (`#180 <https://github.com/ros-perception/image_transport_plugins/issues/180>`_)
-* Export target in the modern way (`#199 <https://github.com/ros-perception/image_transport_plugins/issues/199>`_)
-* Contributors: Alejandro Hernández Cordero, Patrick Roncagliolo
-
-6.1.0 (2025-07-15)
-------------------
-* Replace rmw_qos_profile_t with rclcpp::QoS (`#193 <https://github.com/ros-perception/image_transport_plugins/issues/193>`_)
-* Contributors: Alejandro Hernández Cordero
-
-6.0.0 (2025-07-09)
-------------------
-* Use non deprecated method (`#182 <https://github.com/ros-perception/image_transport_plugins/issues/182>`_)
-* Merge pull request `#188 <https://github.com/ros-perception/image_transport_plugins/issues/188>`_ from bjsowa/fix/canonical-param-names
-* Add TODO comments about deprecated parameters
-* Simplify pre set parameter callback for compressedDepth transport
-* Don't add pre set parameter callback when not needed
-* Add deprecated dot parameters for compressedDepth transport
-* Fix inconsistent transport param names
-* Removed deprecated params (`#183 <https://github.com/ros-perception/image_transport_plugins/issues/183>`_)
-* Removed deprecated headers (`#184 <https://github.com/ros-perception/image_transport_plugins/issues/184>`_)
-* Contributors: Alejandro Hernández Cordero, Błażej Sowa, Kenji Brameld
+* Use non deprecated method (`#182 <https://github.com/ros-perception/image_transport_plugins/issues/182>`_) (`#197 <https://github.com/ros-perception/image_transport_plugins/issues/197>`_)
+* Contributors: mergify[bot]
 
 5.0.3 (2025-05-21)
 ------------------

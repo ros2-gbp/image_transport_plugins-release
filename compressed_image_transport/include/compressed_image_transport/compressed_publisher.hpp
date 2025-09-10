@@ -32,11 +32,9 @@
 
 #include <string>
 #include <vector>
-#include <unordered_set>
 
 #include <sensor_msgs/msg/image.hpp>
 #include <sensor_msgs/msg/compressed_image.hpp>
-#include <image_transport/node_interfaces.hpp>
 #include <image_transport/simple_publisher_plugin.hpp>
 
 #include <rclcpp/node.hpp>
@@ -64,10 +62,11 @@ public:
   }
 
 protected:
+  // Overridden to set up reconfigure server
   void advertiseImpl(
-    image_transport::RequiredInterfaces node_interfaces,
+    rclcpp::Node * node,
     const std::string & base_topic,
-    rclcpp::QoS custom_qos,
+    rmw_qos_profile_t custom_qos,
     rclcpp::PublisherOptions options) override;
 
   void publish(
@@ -75,21 +74,21 @@ protected:
     const PublisherT & publisher) const override;
 
   rclcpp::Logger logger_;
-  rclcpp::node_interfaces::NodeParametersInterface::SharedPtr node_param_interface_;
-  rclcpp::node_interfaces::NodeBaseInterface::SharedPtr node_base_interface_;
+  rclcpp::Node * node_;
 
 private:
   std::vector<std::string> parameters_;
-  std::unordered_set<std::string> deprecated_parameters_;
+  std::vector<std::string> deprecatedParameters_;
 
-  rclcpp::node_interfaces::PreSetParametersCallbackHandle::SharedPtr
-    pre_set_parameter_callback_handle_;
+  rclcpp::Subscription<ParameterEvent>::SharedPtr parameter_subscription_;
 
   void declareParameter(
     const std::string & base_name,
     const ParameterDefinition & definition);
 
-  void preSetParametersCallback(std::vector<rclcpp::Parameter> & parameters);
+  void onParameterEvent(
+    ParameterEvent::SharedPtr event, std::string full_name,
+    std::string base_name);
 };
 }  // namespace compressed_image_transport
 
