@@ -1,6 +1,6 @@
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Changelog for package image_transport_plugins
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Changelog for package zstd_image_transport
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 6.2.2 (2025-10-06)
 ------------------
@@ -10,18 +10,36 @@ Changelog for package image_transport_plugins
 
 6.2.0 (2025-08-22)
 ------------------
+* Support lifecycle (`#180 <https://github.com/ros-perception/image_transport_plugins/issues/180>`_)
+* Fix linter warning (`#201 <https://github.com/ros-perception/image_transport_plugins/issues/201>`_)
+* Contributors: Alejandro Hernández Cordero, Patrick Roncagliolo
 
 6.1.0 (2025-07-15)
 ------------------
+* Replace rmw_qos_profile_t with rclcpp::QoS (`#193 <https://github.com/ros-perception/image_transport_plugins/issues/193>`_)
+* Contributors: Alejandro Hernández Cordero
 
 6.0.0 (2025-07-09)
 ------------------
+* Use non deprecated method (`#182 <https://github.com/ros-perception/image_transport_plugins/issues/182>`_)
+* Merge pull request `#188 <https://github.com/ros-perception/image_transport_plugins/issues/188>`_ from bjsowa/fix/canonical-param-names
+* Add TODO comments about deprecated parameters
+* Simplify pre set parameter callback for other transports
+* Adding the include of cstdint (`#189 <https://github.com/ros-perception/image_transport_plugins/issues/189>`_)
+* Don't add pre set parameter callback when not needed
+* Add deprecated dot parameters for zstd transport
+* Fix inconsistent transport param names
+* Contributors: Alejandro Hernández Cordero, Błażej Sowa, Jan Vermaete, Kenji Brameld
 
 5.0.3 (2025-05-21)
 ------------------
+* Use target_link_libraries instead of ament_target_dependencies (`#179 <https://github.com/ros-perception/image_transport_plugins/issues/179>`_)
+* Contributors: Alejandro Hernández Cordero
 
 5.0.2 (2025-02-10)
 ------------------
+* Use standard C++ type unsigned int in place of uint (`#174 <https://github.com/ros-perception/image_transport_plugins/issues/174>`_)
+* Contributors: Silvio Traversaro
 
 5.0.1 (2024-11-25)
 ------------------
@@ -34,7 +52,7 @@ Changelog for package image_transport_plugins
 
 4.0.0 (2024-04-13)
 ------------------
-* Added ZSTD plugin to metapackage (`#162 <https://github.com/ros-perception/image_transport_plugins/issues/162>`_)
+* Added zstd image transport plugin (`#154 <https://github.com/ros-perception/image_transport_plugins/issues/154>`_)
 * Contributors: Alejandro Hernández Cordero, Kenji Brameld
 
 3.2.0 (2023-05-08)
@@ -42,13 +60,14 @@ Changelog for package image_transport_plugins
 
 3.0.0 (2023-04-18)
 ------------------
-* Update maintainer (`#112 <https://github.com/ros-perception/image_transport_plugins/issues/112>`_)
-* Contributors: Kenji Brameld, Michael Carroll
 
 2.6.0 (2022-08-16)
 ------------------
 
 2.5.0 (2022-04-18)
+------------------
+
+2.4.0 (2022-04-08)
 ------------------
 
 2.3.2 (2022-02-18)
@@ -71,9 +90,6 @@ Changelog for package image_transport_plugins
 
 2.0.0 (2018-12-13)
 ------------------
-* [ros2] image_transport_plugins 'meta'package. (`#30 <https://github.com/ros-perception/image_transport_plugins/issues/30>`_)
-* Update compressed_image_transport to ros2 (`#26 <https://github.com/ros-perception/image_transport_plugins/issues/26>`_)
-* Contributors: Michael Carroll, Jose Luis Rivero
 
 1.9.5 (2016-10-03)
 ------------------
@@ -95,36 +111,21 @@ Changelog for package image_transport_plugins
 
 1.8.21 (2013-06-27)
 -------------------
-* maintainer: david gossow
-* buildtool_depend catkin, added metapackage CMakelists.txt
-* Contributors: David Gossow
 
 1.8.20 (2013-03-18)
 -------------------
-* 1.8.19 -> 1.8.20
-* Contributors: Julius Kammerl
 
 1.8.19 (2013-02-24)
 -------------------
-* 1.8.18 -> 1.8.19
-* removing build dependencies from meta package
-* Contributors: Julius Kammerl
 
-1.8.18 (2013-02-07 17:59)
--------------------------
-* 1.8.17 -> 1.8.18
-* Contributors: Julius Kammerl
+1.8.18 (2013-02-07)
+-------------------
 
 1.8.17 (2013-01-18)
 -------------------
-* 1.8.16 -> 1.8.17
-* Contributors: Julius Kammerl
 
 1.8.16 (2013-01-17)
 -------------------
-* 1.8.15 -> 1.8.16
-* removing build_tool dependency from meta package
-* Contributors: Julius Kammerl
 
 1.8.15 (2012-12-28 20:11)
 -------------------------
@@ -146,35 +147,18 @@ Changelog for package image_transport_plugins
 
 1.8.9 (2012-12-19 00:26)
 ------------------------
-* switching to verion 1.8.9
-* Contributors: Julius Kammerl
 
 1.8.8 (2012-12-17)
 ------------------
-* adding build_deb on message_generation & mrun_deb on message_runtime
-* Updated package.xml for new buildtool_depend tag for catkin requirement
-* Contributors: Julius Kammerl, mirzashah
 
 1.8.7 (2012-12-10 15:29)
 ------------------------
-* adding missing tf build dependency
-* Contributors: Julius Kammerl
 
 1.8.6 (2012-12-10 15:08)
 ------------------------
-* switching to version 1.8.6
-* Contributors: Julius Kammerl
 
 1.8.5 (2012-12-09)
 ------------------
-* more meta package fixing.. adding build debs
-* fixing meta package
-* fixed meta package
-* switching to 1.8.5
-* Contributors: Julius Kammerl
 
 1.8.4 (2012-11-30)
 ------------------
-* switching to version 1.8.4
-* adding image_transport_plugins meta package
-* Contributors: Julius Kammerl
