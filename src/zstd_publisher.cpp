@@ -1,33 +1,30 @@
 // Copyright (c) 2023, Open Source Robotics Foundation, Inc.
 // All rights reserved.
 //
-// Software License Agreement (BSD License 2.0)
-//
 // Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions
-// are met:
+// modification, are permitted provided that the following conditions are met:
 //
-//  * Redistributions of source code must retain the above copyright
-//    notice, this list of conditions and the following disclaimer.
-//  * Redistributions in binary form must reproduce the above
-//    copyright notice, this list of conditions and the following
-//    disclaimer in the documentation and/or other materials provided
-//    with the distribution.
-//  * Neither the name of the copyright holder nor the names of its
-//    contributors may be used to endorse or promote products derived
-//    from this software without specific prior written permission.
+//    * Redistributions of source code must retain the above copyright
+//      notice, this list of conditions and the following disclaimer.
 //
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-// COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-// BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-// LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-// ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+//    * Redistributions in binary form must reproduce the above copyright
+//      notice, this list of conditions and the following disclaimer in the
+//      documentation and/or other materials provided with the distribution.
+//
+//    * Neither the name of the copyright holder nor the names of its
+//      contributors may be used to endorse or promote products derived from
+//      this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
 #include "zstd_image_transport/zstd_publisher.hpp"
@@ -65,11 +62,6 @@ const struct ParameterDefinition kParameters[] =
 ZstdPublisher::ZstdPublisher()
 : logger_(rclcpp::get_logger("ZstdPublisher"))
 {
-}
-
-std::string ZstdPublisher::getTransportName() const
-{
-  return "zstd";
 }
 
 void ZstdPublisher::advertiseImpl(
@@ -119,46 +111,46 @@ void ZstdPublisher::publish(
     total_size += data->size;
   }
 
-  sensor_msgs::msg::CompressedImage compressed;
+  auto compressed = std::make_unique<sensor_msgs::msg::CompressedImage>();
 
   int metadata = 4 + 4 + 1 + 4 + 4 + message.encoding.size();
 
-  compressed.data.resize(total_size + metadata);
+  compressed->data.resize(total_size + metadata);
 
   size_t index = metadata;
   for (const auto & data : g_compressed_data) {
-    memcpy(&compressed.data[index], data->ptr, data->size);
+    memcpy(&compressed->data[index], data->ptr, data->size);
     index += data->size;
   }
 
-  compressed.data[0] = static_cast<uint8_t>(message.height & 0xFF);
-  compressed.data[1] = static_cast<uint8_t>(message.height >> 8) & 0xFF;
-  compressed.data[2] = static_cast<uint8_t>(message.height >> 16) & 0xFF;
-  compressed.data[3] = static_cast<uint8_t>(message.height >> 24) & 0xFF;
+  compressed->data[0] = static_cast<uint8_t>(message.height & 0xFF);
+  compressed->data[1] = static_cast<uint8_t>(message.height >> 8) & 0xFF;
+  compressed->data[2] = static_cast<uint8_t>(message.height >> 16) & 0xFF;
+  compressed->data[3] = static_cast<uint8_t>(message.height >> 24) & 0xFF;
 
-  compressed.data[4] = static_cast<uint8_t>(message.width & 0xFF);
-  compressed.data[5] = static_cast<uint8_t>(message.width >> 8) & 0xFF;
-  compressed.data[6] = static_cast<uint8_t>(message.width >> 16) & 0xFF;
-  compressed.data[7] = static_cast<uint8_t>(message.width >> 24) & 0xFF;
+  compressed->data[4] = static_cast<uint8_t>(message.width & 0xFF);
+  compressed->data[5] = static_cast<uint8_t>(message.width >> 8) & 0xFF;
+  compressed->data[6] = static_cast<uint8_t>(message.width >> 16) & 0xFF;
+  compressed->data[7] = static_cast<uint8_t>(message.width >> 24) & 0xFF;
 
-  compressed.data[8] = message.is_bigendian;
+  compressed->data[8] = message.is_bigendian;
 
-  compressed.data[9] = static_cast<uint8_t>(message.step & 0xFF);
-  compressed.data[10] = static_cast<uint8_t>(message.step >> 8) & 0xFF;
-  compressed.data[11] = static_cast<uint8_t>(message.step >> 16) & 0xFF;
-  compressed.data[12] = static_cast<uint8_t>(message.step >> 24) & 0xFF;
+  compressed->data[9] = static_cast<uint8_t>(message.step & 0xFF);
+  compressed->data[10] = static_cast<uint8_t>(message.step >> 8) & 0xFF;
+  compressed->data[11] = static_cast<uint8_t>(message.step >> 16) & 0xFF;
+  compressed->data[12] = static_cast<uint8_t>(message.step >> 24) & 0xFF;
 
-  compressed.data[13] = static_cast<uint8_t>(message.encoding.size() & 0xFF);
-  compressed.data[14] = static_cast<uint8_t>(message.encoding.size() >> 8) & 0xFF;
-  compressed.data[15] = static_cast<uint8_t>(message.encoding.size() >> 16) & 0xFF;
-  compressed.data[16] = static_cast<uint8_t>(message.encoding.size() >> 24) & 0xFF;
+  compressed->data[13] = static_cast<uint8_t>(message.encoding.size() & 0xFF);
+  compressed->data[14] = static_cast<uint8_t>(message.encoding.size() >> 8) & 0xFF;
+  compressed->data[15] = static_cast<uint8_t>(message.encoding.size() >> 16) & 0xFF;
+  compressed->data[16] = static_cast<uint8_t>(message.encoding.size() >> 24) & 0xFF;
 
-  memcpy(&compressed.data[17], &message.encoding[0], message.encoding.size());
+  memcpy(&compressed->data[17], &message.encoding[0], message.encoding.size());
 
   // Compressed image message
-  compressed.header = message.header;
-  compressed.format = "zstd";
-  publisher->publish(compressed);
+  compressed->header = message.header;
+  compressed->format = "zstd";
+  publisher->publish(std::move(compressed));
 }
 
 void ZstdPublisher::declareParameter(
