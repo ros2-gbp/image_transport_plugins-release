@@ -27,35 +27,13 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef COMPRESSED_DEPTH_IMAGE_TRANSPORT__COMPRESSED_DEPTH_SUBSCRIBER_HPP_
-#define COMPRESSED_DEPTH_IMAGE_TRANSPORT__COMPRESSED_DEPTH_SUBSCRIBER_HPP_
+#ifndef THEORA_IMAGE_TRANSPORT__THEORA_PUBLISHER_H_
+#define THEORA_IMAGE_TRANSPORT__THEORA_PUBLISHER_H_
 
-#include <string>
+#warning \
+  This header is obsolete, please include \
+  theora_image_transport/theora_publisher.hpp instead
 
-#include <rclcpp/node.hpp>
-#include <sensor_msgs/msg/image.hpp>
-#include <sensor_msgs/msg/compressed_image.hpp>
-#include <image_transport/simple_subscriber_plugin.hpp>
+#include <theora_image_transport/theora_publisher.hpp>
 
-namespace compressed_depth_image_transport
-{
-
-class CompressedDepthSubscriber
-  : public image_transport::SimpleSubscriberPlugin<sensor_msgs::msg::CompressedImage>
-{
-public:
-  virtual ~CompressedDepthSubscriber() {}
-
-  virtual std::string getTransportName() const
-  {
-    return "compressedDepth";
-  }
-
-protected:
-  virtual void internalCallback(
-    const sensor_msgs::msg::CompressedImage::ConstSharedPtr & message,
-    const Callback & user_cb);
-};
-
-}  // namespace compressed_depth_image_transport
-#endif  // COMPRESSED_DEPTH_IMAGE_TRANSPORT__COMPRESSED_DEPTH_SUBSCRIBER_HPP_
+#endif  // THEORA_IMAGE_TRANSPORT__THEORA_PUBLISHER_H_

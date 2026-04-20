@@ -1,4 +1,4 @@
-// Copyright (c) 2012, Willow Garage, Inc.
+// Copyright 2019
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -27,35 +27,13 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef COMPRESSED_DEPTH_IMAGE_TRANSPORT__COMPRESSED_DEPTH_SUBSCRIBER_HPP_
-#define COMPRESSED_DEPTH_IMAGE_TRANSPORT__COMPRESSED_DEPTH_SUBSCRIBER_HPP_
+#ifndef COMPRESSED_DEPTH_IMAGE_TRANSPORT__RVL_CODEC_H_
+#define COMPRESSED_DEPTH_IMAGE_TRANSPORT__RVL_CODEC_H_
 
-#include <string>
+#warning \
+  This header is obsolete, please include \
+  compressed_depth_image_transport/rvl_codec.hpp instead
 
-#include <rclcpp/node.hpp>
-#include <sensor_msgs/msg/image.hpp>
-#include <sensor_msgs/msg/compressed_image.hpp>
-#include <image_transport/simple_subscriber_plugin.hpp>
+#include <compressed_depth_image_transport/rvl_codec.hpp>
 
-namespace compressed_depth_image_transport
-{
-
-class CompressedDepthSubscriber
-  : public image_transport::SimpleSubscriberPlugin<sensor_msgs::msg::CompressedImage>
-{
-public:
-  virtual ~CompressedDepthSubscriber() {}
-
-  virtual std::string getTransportName() const
-  {
-    return "compressedDepth";
-  }
-
-protected:
-  virtual void internalCallback(
-    const sensor_msgs::msg::CompressedImage::ConstSharedPtr & message,
-    const Callback & user_cb);
-};
-
-}  // namespace compressed_depth_image_transport
-#endif  // COMPRESSED_DEPTH_IMAGE_TRANSPORT__COMPRESSED_DEPTH_SUBSCRIBER_HPP_
+#endif  // COMPRESSED_DEPTH_IMAGE_TRANSPORT__RVL_CODEC_H_
