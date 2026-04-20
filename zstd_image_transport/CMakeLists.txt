@@ -28,12 +28,13 @@ add_library(
   src/manifest.cpp
 )
 
-target_link_libraries(${PROJECT_NAME}
-  ZLIB::ZLIB
-  image_transport::image_transport
-  rclcpp::rclcpp
-  pluginlib::pluginlib
-  ${sensor_msgs_TARGETS}
+target_link_libraries(${PROJECT_NAME} ZLIB::ZLIB)
+
+ament_target_dependencies(${PROJECT_NAME}
+  "image_transport"
+  "rclcpp"
+  "pluginlib"
+  "sensor_msgs"
 )
 
 install(TARGETS ${PROJECT_NAME}
