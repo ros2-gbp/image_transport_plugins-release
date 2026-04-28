@@ -1,0 +1,12 @@
+Source: ros-rolling-zstd-image-transport
+Section: misc
+Priority: optional
+Maintainer: Alejandro Hernandez Cordero <ahcorde@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), ros-rolling-ament-cmake, ros-rolling-ament-lint-auto <!nocheck>, ros-rolling-ament-lint-common <!nocheck>, ros-rolling-image-transport, zlib1g-dev, ros-rolling-ros-workspace
+Homepage: http://www.ros.org/wiki/image_transport_plugins
+Standards-Version: 3.9.2
+
+Package: ros-rolling-zstd-image-transport
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-rolling-image-transport, zlib1g-dev, ros-rolling-ros-workspace
+Description: zstd_image_transport provides a plugin to image_transport for transparently sending images encoded as zstd blobs
