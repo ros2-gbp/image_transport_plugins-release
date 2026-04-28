@@ -1,4 +1,4 @@
-// Copyright (c) 2012, Willow Garage, Inc.
+// Copyright (c) 2023, Open Source Robotics Foundation, Inc.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -27,22 +27,86 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#include "compressed_depth_image_transport/compressed_depth_subscriber.hpp"
+#ifndef ZLIB_CPP_HPP_
+#define ZLIB_CPP_HPP_
 
-#include "compressed_depth_image_transport/codec.hpp"
-#include "compressed_depth_image_transport/compression_common.hpp"
+#include <zlib.h>
 
-namespace compressed_depth_image_transport
+#include <cstdint>
+#include <list>
+#include <memory>
+#include <tuple>
+
+namespace zlib
 {
 
-void CompressedDepthSubscriber::internalCallback(
-  const sensor_msgs::msg::CompressedImage::ConstSharedPtr & message,
-  const Callback & user_cb)
+struct DataBlock
 {
-  auto image = decodeCompressedDepthImage(*message);
-  if (image) {
-    user_cb(image);
-  }
-}
+  uint8_t * ptr;
+  std::size_t size;
+};
 
-}  // namespace compressed_depth_image_transport
+std::shared_ptr<DataBlock> AllocateData(std::size_t size);
+std::shared_ptr<DataBlock> ExpandDataList(const std::list<std::shared_ptr<DataBlock>> & data_list);
+
+/// Compress processor.
+class Comp
+{
+public:
+  enum class Level
+  {
+    Default = -1,
+    Min = 0,
+    Level_1 = 1,
+    Level_2 = 2,
+    Level_3 = 3,
+    Level_4 = 4,
+    Level_5 = 5,
+    Level_6 = 6,
+    Level_7 = 7,
+    Level_8 = 8,
+    Max = 9
+  };
+
+public:
+  /// Construct a compressor.
+  explicit Comp(Level level = Level::Default, bool zlib_header = false);
+
+  /// Destructor, will release z_stream.
+  ~Comp();
+
+  /// Returns true if compressor initialize successfully.
+  bool IsSucc() const;
+
+  /// Compress incoming buffer to DataBlock list.
+  std::list<std::shared_ptr<DataBlock>> Process(
+    const uint8_t * buffer, std::size_t size, bool last_block = false);
+
+private:
+  Level level_;
+  z_stream zs_;
+  bool init_ok_;
+};
+
+/// Decompress processor.
+class Decomp
+{
+public:
+  /// Construct a decompressor.
+  Decomp();
+
+  /// Destructor, will release z_stream.
+  ~Decomp();
+
+  /// Decompress incoming buffer to DataBlock list.
+  std::list<std::shared_ptr<DataBlock>> Process(
+    const std::shared_ptr<DataBlock> & compressed_data);
+
+private:
+  z_stream zs_;
+  bool init_ok_;
+};
+
+}  // namespace zlib
+
+#endif  // ZLIB_CPP_HPP_

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(compressed_image_transport)
+project(zstd_image_transport)
 
 # Default to C++14
 if(NOT CMAKE_CXX_STANDARD)
@@ -13,27 +13,24 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(image_transport REQUIRED)
-find_package(cv_bridge REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(ZLIB REQUIRED)
 
-find_package(OpenCV REQUIRED)
-
-include_directories(include ${OpenCV_INCLUDE_DIRS})
+include_directories(include)
 
 add_library(
-  ${PROJECT_NAME}
-  SHARED
-  src/compressed_publisher.cpp
-  src/compressed_subscriber.cpp
+  ${PROJECT_NAME} SHARED
+  src/zlib_cpp.cpp
+  src/zstd_publisher.cpp
+  src/zstd_subscriber.cpp
   src/manifest.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}
-  ${OpenCV_LIBRARIES}
+  ZLIB::ZLIB
   image_transport::image_transport
-  cv_bridge::cv_bridge
   rclcpp::rclcpp
   pluginlib::pluginlib
   ${sensor_msgs_TARGETS}
@@ -49,7 +46,7 @@ install(
   DIRECTORY "include/"
   DESTINATION include
 )
-pluginlib_export_plugin_description_file(image_transport compressed_plugins.xml)
+pluginlib_export_plugin_description_file(image_transport zstd_plugins.xml)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

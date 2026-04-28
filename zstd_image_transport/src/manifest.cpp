@@ -1,4 +1,4 @@
-// Copyright (c) 2012, Willow Garage, Inc.
+// Copyright (c) 2023, Open Source Robotics Foundation, Inc.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -28,11 +28,8 @@
 // POSSIBILITY OF SUCH DAMAGE.
 
 #include <pluginlib/class_list_macros.hpp>
-#include "compressed_image_transport/compressed_publisher.hpp"
-#include "compressed_image_transport/compressed_subscriber.hpp"
+#include "zstd_image_transport/zstd_publisher.hpp"
+#include "zstd_image_transport/zstd_subscriber.hpp"
 
-PLUGINLIB_EXPORT_CLASS(compressed_image_transport::CompressedPublisher,
-  image_transport::PublisherPlugin)
-
-PLUGINLIB_EXPORT_CLASS(compressed_image_transport::CompressedSubscriber,
-  image_transport::SubscriberPlugin)
+PLUGINLIB_EXPORT_CLASS(zstd_image_transport::ZstdPublisher, image_transport::PublisherPlugin)
+PLUGINLIB_EXPORT_CLASS(zstd_image_transport::ZstdSubscriber, image_transport::SubscriberPlugin)

@@ -1,4 +1,4 @@
-// Copyright (c) 2012, Willow Garage, Inc.
+// Copyright (c) 2023, Open Source Robotics Foundation, Inc.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -27,12 +27,22 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#include <pluginlib/class_list_macros.hpp>
-#include "compressed_image_transport/compressed_publisher.hpp"
-#include "compressed_image_transport/compressed_subscriber.hpp"
+#ifndef ZSTD_IMAGE_TRANSPORT__ZSTD_COMMON_HPP_
+#define ZSTD_IMAGE_TRANSPORT__ZSTD_COMMON_HPP_
 
-PLUGINLIB_EXPORT_CLASS(compressed_image_transport::CompressedPublisher,
-  image_transport::PublisherPlugin)
+#include <rclcpp/parameter_value.hpp>
+#include <rcl_interfaces/msg/parameter_descriptor.hpp>
 
-PLUGINLIB_EXPORT_CLASS(compressed_image_transport::CompressedSubscriber,
-  image_transport::SubscriberPlugin)
+namespace zstd_image_transport
+{
+using ParameterDescriptor = rcl_interfaces::msg::ParameterDescriptor;
+using ParameterValue = rclcpp::ParameterValue;
+
+struct ParameterDefinition
+{
+  const ParameterValue defaultValue;
+  const ParameterDescriptor descriptor;
+};
+}  // namespace zstd_image_transport
+
+#endif  // ZSTD_IMAGE_TRANSPORT__ZSTD_COMMON_HPP_

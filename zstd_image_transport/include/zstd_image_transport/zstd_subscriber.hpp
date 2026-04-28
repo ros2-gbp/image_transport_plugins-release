@@ -1,4 +1,4 @@
-// Copyright (c) 2012, Willow Garage, Inc.
+// Copyright (c) 2023, Open Source Robotics Foundation, Inc.
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -27,12 +27,50 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#include <pluginlib/class_list_macros.hpp>
-#include "compressed_image_transport/compressed_publisher.hpp"
-#include "compressed_image_transport/compressed_subscriber.hpp"
 
-PLUGINLIB_EXPORT_CLASS(compressed_image_transport::CompressedPublisher,
-  image_transport::PublisherPlugin)
+#ifndef ZSTD_IMAGE_TRANSPORT__ZSTD_SUBSCRIBER_HPP_
+#define ZSTD_IMAGE_TRANSPORT__ZSTD_SUBSCRIBER_HPP_
 
-PLUGINLIB_EXPORT_CLASS(compressed_image_transport::CompressedSubscriber,
-  image_transport::SubscriberPlugin)
+#include <string>
+#include <vector>
+
+#include <rclcpp/node.hpp>
+#include <rclcpp/subscription_options.hpp>
+
+#include <sensor_msgs/msg/image.hpp>
+#include <sensor_msgs/msg/compressed_image.hpp>
+#include <image_transport/node_interfaces.hpp>
+#include <image_transport/simple_subscriber_plugin.hpp>
+
+#include "zstd_image_transport/zstd_common.hpp"
+
+namespace zstd_image_transport
+{
+
+using ParameterEvent = rcl_interfaces::msg::ParameterEvent;
+
+class ZstdSubscriber final
+  : public image_transport::SimpleSubscriberPlugin<sensor_msgs::msg::CompressedImage>
+{
+public:
+  ZstdSubscriber();
+  virtual ~ZstdSubscriber() = default;
+
+protected:
+  void subscribeImpl(
+    image_transport::RequiredInterfaces node_interfaces,
+    const std::string & base_topic,
+    const Callback & callback,
+    rclcpp::QoS custom_qos,
+    rclcpp::SubscriptionOptions options) override;
+
+  void internalCallback(
+    const sensor_msgs::msg::CompressedImage::ConstSharedPtr & message,
+    const Callback & user_cb) override;
+
+  rclcpp::Logger logger_;
+};
+
+}  // namespace zstd_image_transport
+
+#endif  // ZSTD_IMAGE_TRANSPORT__ZSTD_SUBSCRIBER_HPP_
