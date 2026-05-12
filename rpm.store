@@ -1,1 +1,1 @@
-{"base": "ba7101b24dbf", "parent": "release/rolling/zstd_image_transport/6.2.4-2", "previous": "2eb702130728", "trim": "", "trimbase": ""}
+{"base": "12240334", "parent": "release/rolling/zstd_image_transport", "previous": "23ae0422", "trim": "", "trimbase": ""}
