@@ -203,7 +203,7 @@ sensor_msgs::msg::Image::SharedPtr decodeCompressedDepthImage(
   return sensor_msgs::msg::Image::SharedPtr();
 }
 
-sensor_msgs::msg::CompressedImage::UniquePtr encodeCompressedDepthImage(
+sensor_msgs::msg::CompressedImage::SharedPtr encodeCompressedDepthImage(
   const sensor_msgs::msg::Image & message,
   const std::string & format,
   double depth_max,
@@ -211,7 +211,7 @@ sensor_msgs::msg::CompressedImage::UniquePtr encodeCompressedDepthImage(
   int png_level)
 {
   // Compressed image message
-  auto compressed = std::make_unique<sensor_msgs::msg::CompressedImage>();
+  sensor_msgs::msg::CompressedImage::SharedPtr compressed(new sensor_msgs::msg::CompressedImage());
   compressed->header = message.header;
   compressed->format = message.encoding;
 
@@ -248,7 +248,7 @@ sensor_msgs::msg::CompressedImage::UniquePtr encodeCompressedDepthImage(
       cv_ptr = cv_bridge::toCvCopy(message);
     } catch (cv_bridge::Exception & e) {
       RCLCPP_ERROR(logger, "%s", e.what());
-      return sensor_msgs::msg::CompressedImage::UniquePtr();
+      return sensor_msgs::msg::CompressedImage::SharedPtr();
     }
 
     const cv::Mat & depthImg = cv_ptr->image;
@@ -297,11 +297,11 @@ sensor_msgs::msg::CompressedImage::UniquePtr encodeCompressedDepthImage(
                 cRatio, compressedImage.size());
           } else {
             RCLCPP_ERROR(logger, "cv::imencode (png) failed on input image");
-            return sensor_msgs::msg::CompressedImage::UniquePtr();
+            return sensor_msgs::msg::CompressedImage::SharedPtr();
           }
         } catch (cv::Exception & e) {
           RCLCPP_ERROR(logger, "%s", e.msg.c_str());
-          return sensor_msgs::msg::CompressedImage::UniquePtr();
+          return sensor_msgs::msg::CompressedImage::SharedPtr();
         }
       } else if (format == "rvl") {
         int numPixels = invDepthImg.rows * invDepthImg.cols;
@@ -324,7 +324,7 @@ sensor_msgs::msg::CompressedImage::UniquePtr encodeCompressedDepthImage(
       cv_ptr = cv_bridge::toCvCopy(message);
     } catch (cv::Exception & e) {
       RCLCPP_ERROR(logger, "%s", e.msg.c_str());
-      return sensor_msgs::msg::CompressedImage::UniquePtr();
+      return sensor_msgs::msg::CompressedImage::SharedPtr();
     }
 
     const cv::Mat & depthImg = cv_ptr->image;
@@ -355,7 +355,7 @@ sensor_msgs::msg::CompressedImage::UniquePtr encodeCompressedDepthImage(
               compressedImage.size());
         } else {
           RCLCPP_ERROR(logger, "cv::imencode (png) failed on input image");
-          return sensor_msgs::msg::CompressedImage::UniquePtr();
+          return sensor_msgs::msg::CompressedImage::SharedPtr();
         }
       } else if (format == "rvl") {
         int numPixels = cv_ptr->image.rows * cv_ptr->image.cols;
@@ -376,7 +376,7 @@ sensor_msgs::msg::CompressedImage::UniquePtr encodeCompressedDepthImage(
       "Compressed Depth Image Transport - Compression requires single-channel 32bit-floating "
       " point or 16bit raw depth images (input format is: %s).",
         message.encoding.c_str());
-    return sensor_msgs::msg::CompressedImage::UniquePtr();
+    return sensor_msgs::msg::CompressedImage::SharedPtr();
   }
 
   if (compressedImage.size() > 0) {
@@ -390,7 +390,7 @@ sensor_msgs::msg::CompressedImage::UniquePtr encodeCompressedDepthImage(
     return compressed;
   }
 
-  return sensor_msgs::msg::CompressedImage::UniquePtr();
+  return sensor_msgs::msg::CompressedImage::SharedPtr();
 }
 
 }  // namespace compressed_depth_image_transport

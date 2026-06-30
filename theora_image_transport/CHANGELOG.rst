@@ -2,52 +2,21 @@
 Changelog for package theora_image_transport
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-6.2.6 (2026-06-30)
+5.1.3 (2026-06-30)
 ------------------
-* Update CMakeLists minimum version (`#229 <https://github.com/ros-perception/image_transport_plugins/issues/229>`_) (`#235 <https://github.com/ros-perception/image_transport_plugins/issues/235>`_)
+* Update CMakeLists minimum version (`#229 <https://github.com/ros-perception/image_transport_plugins/issues/229>`_) (`#236 <https://github.com/ros-perception/image_transport_plugins/issues/236>`_)
 * Contributors: mergify[bot]
 
-6.2.5 (2026-05-13)
+5.1.2 (2026-04-20)
 ------------------
 
-6.2.4 (2026-04-13)
+5.1.1 (2025-09-10)
 ------------------
 
-6.2.3 (2026-04-06)
+5.1.0 (2025-07-09)
 ------------------
-* Update API (`#217 <https://github.com/ros-perception/image_transport_plugins/issues/217>`_)
-* Publish with uniqueptr for efficiency (`#216 <https://github.com/ros-perception/image_transport_plugins/issues/216>`_)
-* Contributors: Alejandro Hernández Cordero, Maurice Alexander Purnawan
-
-6.2.2 (2025-10-06)
-------------------
-
-6.2.1 (2025-09-10)
-------------------
-
-6.2.0 (2025-08-22)
-------------------
-* Support lifecycle (`#180 <https://github.com/ros-perception/image_transport_plugins/issues/180>`_)
-* Contributors: Alejandro Hernández Cordero
-
-6.1.0 (2025-07-15)
-------------------
-* Replace rmw_qos_profile_t with rclcpp::QoS (`#193 <https://github.com/ros-perception/image_transport_plugins/issues/193>`_)
-* Contributors: Alejandro Hernández Cordero
-
-6.0.0 (2025-07-09)
-------------------
-* Use non deprecated method (`#182 <https://github.com/ros-perception/image_transport_plugins/issues/182>`_)
-* Merge pull request `#188 <https://github.com/ros-perception/image_transport_plugins/issues/188>`_ from bjsowa/fix/canonical-param-names
-* Add TODO comments about deprecated parameters
-* Simplify pre set parameter callback for other transports
-* Don't add pre set parameter callback when not needed
-* Use post set parameter callback instead of parameter events
-* Add deprecated dot parameters for theora transport
-* Fix inconsistent transport param names
-* Removed deprecated params (`#183 <https://github.com/ros-perception/image_transport_plugins/issues/183>`_)
-* Removed deprecated headers (`#184 <https://github.com/ros-perception/image_transport_plugins/issues/184>`_)
-* Contributors: Alejandro Hernández Cordero, Błażej Sowa, Kenji Brameld
+* Use non deprecated method (`#182 <https://github.com/ros-perception/image_transport_plugins/issues/182>`_) (`#197 <https://github.com/ros-perception/image_transport_plugins/issues/197>`_)
+* Contributors: mergify[bot]
 
 5.0.3 (2025-05-21)
 ------------------

@@ -131,28 +131,26 @@ const struct ParameterDefinition kParameters[] =
 };
 
 void CompressedPublisher::advertiseImpl(
-  image_transport::RequiredInterfaces node_interfaces,
+  rclcpp::Node * node,
   const std::string & base_topic,
-  rclcpp::QoS custom_qos,
+  rmw_qos_profile_t custom_qos,
   rclcpp::PublisherOptions options)
 {
-  node_param_interface_ = node_interfaces.get_node_parameters_interface();
-  node_base_interface_ = node_interfaces.get_node_base_interface();
+  node_ = node;
   typedef image_transport::SimplePublisherPlugin<sensor_msgs::msg::CompressedImage> Base;
-  Base::advertiseImpl(node_interfaces, base_topic, custom_qos, options);
+  Base::advertiseImpl(node, base_topic, custom_qos, options);
 
   // Declare Parameters
-  unsigned int ns_len =
-    std::string(node_interfaces.get_node_base_interface()->get_namespace()).length();
+  uint ns_len = node->get_effective_namespace().length();
   std::string param_base_name = base_topic.substr(ns_len);
   std::replace(param_base_name.begin(), param_base_name.end(), '/', '.');
 
-  if (ns_len > 1) {
-    // Add pre set parameter callback to handle deprecated parameters
-    pre_set_parameter_callback_handle_ =
-      node_param_interface_->add_pre_set_parameters_callback(std::bind(
-        &CompressedPublisher::preSetParametersCallback, this, std::placeholders::_1));
-  }
+  using callbackT = std::function<void(ParameterEvent::SharedPtr event)>;
+  auto callback = std::bind(&CompressedPublisher::onParameterEvent, this, std::placeholders::_1,
+                            node->get_fully_qualified_name(), param_base_name);
+
+  parameter_subscription_ = rclcpp::SyncParametersClient::on_parameter_event<callbackT>(node,
+      callback);
 
   for(const ParameterDefinition & pd : kParameters) {
     declareParameter(param_base_name, pd);
@@ -164,26 +162,20 @@ void CompressedPublisher::publish(
   const PublisherT & publisher) const
 {
   // Fresh Configuration
-  std::string cfg_format = node_param_interface_->get_parameter(
-    parameters_[FORMAT]).get_value<std::string>();
-  int cfg_png_level = node_param_interface_->get_parameter(
-    parameters_[PNG_LEVEL]).get_value<int64_t>();
-  int cfg_jpeg_quality = node_param_interface_->get_parameter(
-    parameters_[JPEG_QUALITY]).get_value<int64_t>();
+  std::string cfg_format = node_->get_parameter(parameters_[FORMAT]).get_value<std::string>();
+  int cfg_png_level = node_->get_parameter(parameters_[PNG_LEVEL]).get_value<int64_t>();
+  int cfg_jpeg_quality = node_->get_parameter(parameters_[JPEG_QUALITY]).get_value<int64_t>();
   bool cfg_jpeg_compress_bayer =
-    node_param_interface_->get_parameter(parameters_[JPEG_COMPRESS_BAYER]).get_value<bool>();
+    node_->get_parameter(parameters_[JPEG_COMPRESS_BAYER]).get_value<bool>();
   std::string cfg_tiff_res_unit =
-    node_param_interface_->get_parameter(
-      parameters_[TIFF_RESOLUTION_UNIT]).get_value<std::string>();
-  int cfg_tiff_xdpi = node_param_interface_->get_parameter(
-    parameters_[TIFF_XDPI]).get_value<int64_t>();
-  int cfg_tiff_ydpi = node_param_interface_->get_parameter(
-    parameters_[TIFF_YDPI]).get_value<int64_t>();
+    node_->get_parameter(parameters_[TIFF_RESOLUTION_UNIT]).get_value<std::string>();
+  int cfg_tiff_xdpi = node_->get_parameter(parameters_[TIFF_XDPI]).get_value<int64_t>();
+  int cfg_tiff_ydpi = node_->get_parameter(parameters_[TIFF_YDPI]).get_value<int64_t>();
 
   // Compressed image message
-  auto compressed = std::make_unique<sensor_msgs::msg::CompressedImage>();
-  compressed->header = message.header;
-  compressed->format = message.encoding;
+  sensor_msgs::msg::CompressedImage compressed;
+  compressed.header = message.header;
+  compressed.format = message.encoding;
 
   // Compression settings
   std::vector<int> params;
@@ -210,7 +202,7 @@ void CompressedPublisher::publish(
         params.emplace_back(cfg_jpeg_quality);
 
         // Update ros message format header
-        compressed->format += "; jpeg compressed ";
+        compressed.format += "; jpeg compressed ";
 
         // Check input format
         if ((bitDepth == 8) || (bitDepth == 16)) {
@@ -219,15 +211,15 @@ void CompressedPublisher::publish(
           if (enc::isColor(message.encoding)) {
             // convert color images to BGR8 format
             targetFormat = "bgr8";
-            compressed->format += targetFormat;
+            compressed.format += targetFormat;
           } else if (enc::isBayer(message.encoding) && cfg_jpeg_compress_bayer) {
             // do not convert bayer format to mono
             targetFormat = message.encoding;
-            compressed->format += targetFormat;
+            compressed.format += targetFormat;
           } else {
             // convert gray images to mono8 format
             targetFormat = "mono8";
-            compressed->format += targetFormat;
+            compressed.format += targetFormat;
           }
 
           // OpenCV-ros bridge
@@ -237,12 +229,12 @@ void CompressedPublisher::publish(
               targetFormat);
 
             // Compress image
-            if (cv::imencode(".jpg", cv_ptr->image, compressed->data, params)) {
+            if (cv::imencode(".jpg", cv_ptr->image, compressed.data, params)) {
               float cRatio = static_cast<float>(cv_ptr->image.rows * cv_ptr->image.cols *
-                cv_ptr->image.elemSize() / compressed->data.size());
+                cv_ptr->image.elemSize() / compressed.data.size());
               RCLCPP_DEBUG(logger_,
                 "Compressed Image Transport - Codec: jpg, Compression Ratio: 1:%.2f (%lu bytes)",
-                cRatio, compressed->data.size());
+                cRatio, compressed.data.size());
             } else {
               RCLCPP_ERROR(logger_, "cv::imencode (jpeg) failed on input image");
             }
@@ -253,7 +245,7 @@ void CompressedPublisher::publish(
           }
 
           // Publish message
-          publisher->publish(std::move(compressed));
+          publisher->publish(compressed);
         } else {
           RCLCPP_ERROR(logger_,
             "Compressed Image Transport - JPEG compression requires 8/16-bit color format "
@@ -269,7 +261,7 @@ void CompressedPublisher::publish(
         params.emplace_back(cfg_png_level);
 
         // Update ros message format header
-        compressed->format += "; png compressed ";
+        compressed.format += "; png compressed ";
 
         // Check input format
         if ((bitDepth == 8) || (bitDepth == 16)) {
@@ -282,7 +274,7 @@ void CompressedPublisher::publish(
               targetFormat << "a";
             }
             targetFormat << bitDepth;
-            compressed->format += targetFormat.str();
+            compressed.format += targetFormat.str();
           }
 
           // OpenCV-ros bridge
@@ -292,12 +284,12 @@ void CompressedPublisher::publish(
               targetFormat.str());
 
             // Compress image
-            if (cv::imencode(".png", cv_ptr->image, compressed->data, params)) {
+            if (cv::imencode(".png", cv_ptr->image, compressed.data, params)) {
               float cRatio = static_cast<float>(cv_ptr->image.rows * cv_ptr->image.cols *
-                cv_ptr->image.elemSize() / compressed->data.size());
+                cv_ptr->image.elemSize() / compressed.data.size());
               RCUTILS_LOG_DEBUG(
                 "Compressed Image Transport - Codec: png, Compression Ratio: 1:%.2f (%lu bytes)",
-                cRatio, compressed->data.size());
+                cRatio, compressed.data.size());
             } else {
               RCUTILS_LOG_ERROR("cv::imencode (png) failed on input image");
             }
@@ -310,7 +302,7 @@ void CompressedPublisher::publish(
           }
 
           // Publish message
-          publisher->publish(std::move(compressed));
+          publisher->publish(compressed);
         } else {
           RCUTILS_LOG_ERROR(
           "Compressed Image Transport - PNG compression requires 8/16-bit "
@@ -323,7 +315,7 @@ void CompressedPublisher::publish(
     case TIFF:
       {
         // Update ros message format header
-        compressed->format += "; tiff compressed ";
+        compressed.format += "; tiff compressed ";
         int res_unit = -1;
         // See https://gitlab.com/libtiff/libtiff/-/blob/v4.3.0/libtiff/tiff.h#L282-284
         if (cfg_tiff_res_unit == "inch") {
@@ -353,12 +345,12 @@ void CompressedPublisher::publish(
             cv_bridge::CvImageConstPtr cv_ptr = cv_bridge::toCvShare(message, nullptr, "");
 
             // Compress image
-            if (cv::imencode(".tiff", cv_ptr->image, compressed->data, params)) {
+            if (cv::imencode(".tiff", cv_ptr->image, compressed.data, params)) {
               float cRatio = static_cast<float>(cv_ptr->image.rows * cv_ptr->image.cols *
-                cv_ptr->image.elemSize() / compressed->data.size());
+                cv_ptr->image.elemSize() / compressed.data.size());
               RCUTILS_LOG_DEBUG(
                 "Compressed Image Transport - Codec: tiff, Compression Ratio: 1:%.2f (%lu bytes)",
-                cRatio, compressed->data.size());
+                cRatio, compressed.data.size());
             } else {
               RCUTILS_LOG_ERROR("cv::imencode (tiff) failed on input image");
             }
@@ -371,7 +363,7 @@ void CompressedPublisher::publish(
           }
 
           // Publish message
-          publisher->publish(std::move(compressed));
+          publisher->publish(compressed);
         } else {
           RCUTILS_LOG_ERROR(
           "Compressed Image Transport - TIFF compression requires 8/16/32-bit encoded color format "
@@ -397,57 +389,67 @@ void CompressedPublisher::declareParameter(
     definition.descriptor.name;
   parameters_.push_back(param_name);
 
+  // deprecated non-scoped parameter name (e.g. image_raw.format)
+  const std::string deprecated_name = base_name + "." + definition.descriptor.name;
+  deprecatedParameters_.push_back(deprecated_name);
+
   rclcpp::ParameterValue param_value;
 
   try {
-    param_value = node_param_interface_->declare_parameter(
-      param_name, definition.defaultValue,
-      definition.descriptor);
+    param_value = node_->declare_parameter(param_name, definition.defaultValue,
+        definition.descriptor);
   } catch (const rclcpp::exceptions::ParameterAlreadyDeclaredException &) {
     RCLCPP_DEBUG(logger_, "%s was previously declared", definition.descriptor.name.c_str());
-    param_value = node_param_interface_->get_parameter(param_name).get_parameter_value();
+    param_value = node_->get_parameter(param_name).get_parameter_value();
   }
 
-  // TODO(anyone): Remove deprecated parameters after Lyrical release
-  if (std::string(node_base_interface_->get_namespace()).length() > 1) {
-    // deprecated parameters starting with the dot character (e.g. .image_raw.compressed.format)
-    const std::string deprecated_dot_name = "." + base_name + "." + transport_name + "." +
-      definition.descriptor.name;
-    deprecated_parameters_.insert(deprecated_dot_name);
-
-    try {
-      node_param_interface_->declare_parameter(deprecated_dot_name, param_value,
-          definition.descriptor);
-    } catch (const rclcpp::exceptions::ParameterAlreadyDeclaredException &) {
-      RCLCPP_DEBUG(logger_, "%s was previously declared", definition.descriptor.name.c_str());
-    }
+  // transport scoped parameter as default, otherwise we would overwrite
+  try {
+    node_->declare_parameter(deprecated_name, param_value, definition.descriptor);
+  } catch (const rclcpp::exceptions::ParameterAlreadyDeclaredException &) {
+    RCLCPP_DEBUG(logger_, "%s was previously declared", definition.descriptor.name.c_str());
   }
 }
 
-void CompressedPublisher::preSetParametersCallback(std::vector<rclcpp::Parameter> & parameters)
+void CompressedPublisher::onParameterEvent(
+  ParameterEvent::SharedPtr event, std::string full_name,
+  std::string base_name)
 {
-  std::vector<rclcpp::Parameter> new_parameters;
-
-  for (auto & param : parameters) {
-    const auto & param_name = param.get_name();
-
-    // Check if this is a deprecated dot-prefixed parameter for our transport
-    if (deprecated_parameters_.find(param_name) != deprecated_parameters_.end()) {
-      auto non_dot_prefixed_name = param_name.substr(1);
-      RCLCPP_WARN_STREAM(logger_,
-            "parameter `" << param_name << "` with leading dot character is deprecated; use: `" <<
-            non_dot_prefixed_name << "` instead");
-      new_parameters.push_back(
-          rclcpp::Parameter(non_dot_prefixed_name, param.get_parameter_value()));
-    }
-
-    // Check if this is a normal parameter for our transport
-    if (std::find(parameters_.begin(), parameters_.end(), param_name) != parameters_.end()) {
-      // Also update the dot-prefixed parameter
-      new_parameters.emplace_back("." + param_name, param.get_parameter_value());
-    }
+  // filter out events from other nodes
+  if (event->node != full_name) {
+    return;
   }
 
-  parameters.insert(parameters.end(), new_parameters.begin(), new_parameters.end());
+  // filter out new/changed deprecated parameters
+  using EventType = rclcpp::ParameterEventsFilter::EventType;
+
+  rclcpp::ParameterEventsFilter filter(event, deprecatedParameters_,
+    {EventType::NEW, EventType::CHANGED});
+
+  const std::string transport = getTransportName();
+
+  // emit warnings for deprecated parameters & sync deprecated parameter value to correct
+  for (auto & it : filter.get_events()) {
+    const std::string name = it.second->name;
+    // name was generated from base_name, has to succeed
+    size_t baseNameIndex = name.find(base_name);
+    size_t paramNameIndex = baseNameIndex + base_name.size();
+    // e.g. `color.image_raw.` + `compressed` + `format`
+    std::string recommendedName = name.substr(0,
+        paramNameIndex + 1) + transport + name.substr(paramNameIndex);
+
+    rclcpp::Parameter recommendedValue = node_->get_parameter(recommendedName);
+
+    // do not emit warnings if deprecated value matches
+    if(it.second->value == recommendedValue.get_value_message()) {
+      continue;
+    }
+
+    RCLCPP_WARN_STREAM(logger_, "parameter `" << name << "` is deprecated and ambiguous" <<
+                                "; use transport qualified name `" << recommendedName << "`");
+
+    node_->set_parameter(rclcpp::Parameter(recommendedName, it.second->value));
+  }
 }
+
 }  // namespace compressed_image_transport

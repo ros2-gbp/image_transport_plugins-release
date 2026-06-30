@@ -2,33 +2,18 @@
 Changelog for package image_transport_plugins
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-6.2.6 (2026-06-30)
+5.1.3 (2026-06-30)
 ------------------
-* Update CMakeLists minimum version (`#229 <https://github.com/ros-perception/image_transport_plugins/issues/229>`_) (`#235 <https://github.com/ros-perception/image_transport_plugins/issues/235>`_)
+* Update CMakeLists minimum version (`#229 <https://github.com/ros-perception/image_transport_plugins/issues/229>`_) (`#236 <https://github.com/ros-perception/image_transport_plugins/issues/236>`_)
 * Contributors: mergify[bot]
 
-6.2.5 (2026-05-13)
+5.1.2 (2026-04-20)
 ------------------
 
-6.2.4 (2026-04-13)
+5.1.1 (2025-09-10)
 ------------------
 
-6.2.3 (2026-04-06)
-------------------
-
-6.2.2 (2025-10-06)
-------------------
-
-6.2.1 (2025-09-10)
-------------------
-
-6.2.0 (2025-08-22)
-------------------
-
-6.1.0 (2025-07-15)
-------------------
-
-6.0.0 (2025-07-09)
+5.1.0 (2025-07-09)
 ------------------
 
 5.0.3 (2025-05-21)
