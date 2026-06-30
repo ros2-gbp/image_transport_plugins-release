@@ -2,7 +2,13 @@
 Changelog for package compressed_image_transport
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-6.2.5 (2026-05-13)
+7.0.1 (2026-06-30)
+------------------
+* Update CMakeLists minimum version (`#229 <https://github.com/ros-perception/image_transport_plugins/issues/229>`_)
+* Remoed parameter event alias (`#226 <https://github.com/ros-perception/image_transport_plugins/issues/226>`_)
+* Contributors: Alejandro Hernández Cordero
+
+7.0.0 (2026-05-13)
 ------------------
 
 6.2.4 (2026-04-13)
