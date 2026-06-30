@@ -47,6 +47,7 @@ namespace compressed_depth_image_transport
 {
 
 using CompressedImage = sensor_msgs::msg::CompressedImage;
+using ParameterEvent = rcl_interfaces::msg::ParameterEvent;
 
 class CompressedDepthPublisher : public image_transport::SimplePublisherPlugin<CompressedImage>
 {
